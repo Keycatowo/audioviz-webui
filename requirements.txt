@@ -6,3 +6,4 @@ seaborn
 matplotlib
 plotly
 scikit-learn
+soundfile 
