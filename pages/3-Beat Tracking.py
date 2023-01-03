@@ -1,7 +1,11 @@
 #%%
 import streamlit as st
 import librosa
+<<<<<<< HEAD
 from src.beat_track import beat_analysis, static_tempo_estimation
+=======
+from src.beat_track import beat_analysis, static_tempo_estimation, onset_and_beat_analysis
+>>>>>>> 14e25ee4bc81e13679a14dbf0e852acaa0921dea
 
 st.title('Beat Tracking')
 
