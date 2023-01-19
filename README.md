@@ -3,6 +3,19 @@
 ## 程式
 相關程式來源於[這裡](https://github.com/TrangDuLam/NTHU_Music_AI_Tools)。
 
+## 安裝及執行方式
+
+```sh
+# 下載專案
+git clone https://github.com/Keycatowo/music-analysis.git
+
+# 安裝相關套件
+pip install -r requirements.txt
+
+# 執行
+streamlit run home.py
+```
+
 ## 範例
 ![](fig/demo.gif)
 
