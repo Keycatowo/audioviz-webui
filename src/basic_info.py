@@ -47,4 +47,4 @@ def signal_RMS_analysis(y: npt.ArrayLike, show_plot: bool = True, to_csv: bool =
         info = np.vstack((times, rms[0])).T
         np.savetxt('time_to_rms.csv', info, fmt="%.3f", delimiter=",")
 
-    return fig, ax
+    return fig, ax, times, rms
