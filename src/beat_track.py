@@ -11,7 +11,7 @@ from numpy import typing as npt
 import typing
 
 
-def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = True) -> None :
+def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = False) -> None :
 
     o_env = librosa.onset.onset_strength(y=y, sr=sr)
     times = librosa.times_like(o_env, sr=sr)
@@ -29,9 +29,11 @@ def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = True) -> No
     ax[1].legend()
 
 
+    y_onset_clicks = librosa.clicks(frames=onset_frames, sr=sr, length=len(y))
     if write_to_wav :
-        y_onset_clicks = librosa.clicks(frames=onset_frames, sr=sr, length=len(y))
         sf.write('withOnsets.wav', y+y_onset_clicks, sr, subtype='PCM_24')
+
+    return fig, ax, y_onset_clicks
 
 
 def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_mel: bool = False, cqt: bool = False) :
@@ -66,16 +68,10 @@ def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_
     ax[1].legend()
     ax[1].set(ylabel='Normalized strength', yticks=[])
 
-
-def beats_clicks(y: npt.ArrayLike, sr: int) -> None :
-
-    tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-    y_beats = librosa.clicks(frames=beats, sr=sr, length=len(y))
-
-    sf.write('stereo_file.wav', y+y_beats, sr, subtype='PCM_24')
+    return fig, ax
 
 
-def beat_analysis(y: npt.ArrayLike, sr:int, write_to_wav: bool = True, spec_type: str = 'mel', spec_hop_length: int = 512) :
+def beat_analysis(y: npt.ArrayLike, sr:int, write_to_wav: bool = False, spec_type: str = 'mel', spec_hop_length: int = 512) :
     
     fig, ax = plt.subplots(nrows=2, sharex=True)
     onset_env = librosa.onset.onset_strength(y=y, sr=sr, aggregate=np.median)
@@ -107,11 +103,10 @@ def beat_analysis(y: npt.ArrayLike, sr:int, write_to_wav: bool = True, spec_type
     ax[1].plot([], [], ' ', label = tempoString)
     ax[1].legend()
 
+    y_beats = librosa.clicks(frames=beats, sr=sr, length=len(y))
     if write_to_wav :
-        y_beats = librosa.clicks(frames=beats, sr=sr, length=len(y))
         sf.write('stereo_file.wav', y+y_beats, sr, subtype='PCM_24')
-    return fig, ax
-
+    return fig, ax, y_beats
 
 def predominant_local_pulse(y: npt.ArrayLike, sr:int) -> None :
 
@@ -120,12 +115,14 @@ def predominant_local_pulse(y: npt.ArrayLike, sr:int) -> None :
     beats_plp = np.flatnonzero(librosa.util.localmax(pulse))
     times = librosa.times_like(pulse, sr=sr)
 
-    plt.figure()
-    plt.plot(times, librosa.util.normalize(pulse),label='PLP')
-    plt.vlines(times[beats_plp], 0, 1, alpha=0.5, color='r', 
+    fig, ax = plt.subplots()
+    ax.plot(times, librosa.util.normalize(pulse),label='PLP')
+    ax.vlines(times[beats_plp], 0, 1, alpha=0.5, color='r', 
              linestyle='--', label='PLP Beats')
-    plt.legend()
-    plt.title("Predominant local pulse")
+    ax.legend()
+    ax.set(title="Predominant local pulse")
+
+    return fig, ax
 
 
 def static_tempo_estimation(y: npt.ArrayLike, sr: int, hop_length: int = 512) -> None:
@@ -161,6 +158,7 @@ def static_tempo_estimation(y: npt.ArrayLike, sr: int, hop_length: int = 512) ->
   ax.set(xlabel='Tempo (BPM)', title='Static tempo estimation')
   ax.grid(True)
   ax.legend() 
+
   return fig, ax
 
 
@@ -170,19 +168,23 @@ def plot_tempogram(y: npt.ArrayLike, sr: int, type: str = 'autocorr', hop_length
     tempogram = librosa.feature.fourier_tempogram(onset_envelope=oenv, sr=sr, hop_length=hop_length)
     tempo = librosa.beat.tempo(onset_envelope=oenv, sr=sr, hop_length=hop_length)[0]
 
+    fig, ax = plt.subplots()
+
     if type == 'fourier' :
         # To determine which temp to show?
         librosa.display.specshow(np.abs(tempogram), sr=sr, hop_length=hop_length, 
                                  x_axis='time', y_axis='fourier_tempo', cmap='magma')
-        plt.axhline(tempo, color='w', linestyle='--', alpha=1, label='Estimated tempo={:g}'.format(tempo))
-        plt.legend(loc='upper right')
-        plt.title('Fourier Tempogram')
+        ax.axhline(tempo, color='w', linestyle='--', alpha=1, label='Estimated tempo={:g}'.format(tempo))
+        ax.legend(loc='upper right')
+        # ax.title('Fourier Tempogram')
 
     if type == 'autocorr' :
         ac_tempogram = librosa.feature.tempogram(onset_envelope=oenv, sr=sr, hop_length=hop_length, norm=None)
         librosa.display.specshow(ac_tempogram, sr=sr, hop_length=hop_length, x_axis='time', y_axis='tempo', cmap='magma')
-        plt.axhline(tempo, color='w', linestyle='--', alpha=1, label='Estimated tempo={:g}'.format(tempo))
-        plt.legend(loc='upper right')
-        plt.title('Autocorrelation Tempogram')
+        ax.axhline(tempo, color='w', linestyle='--', alpha=1, label='Estimated tempo={:g}'.format(tempo))
+        ax.legend(loc='upper right')
+        # ax.title('Autocorrelation Tempogram')
+    
+    return fig, ax
 
 
