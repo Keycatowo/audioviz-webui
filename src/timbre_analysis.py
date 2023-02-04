@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import scipy
 
 
-def spectral_centroid_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = True) -> None :
+def spectral_centroid_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False) -> None :
 
     S, phase = librosa.magphase(librosa.stft(y=y))
     cent = librosa.feature.spectral_centroid(S=S)
@@ -22,14 +22,14 @@ def spectral_centroid_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = Tr
     ax.legend(loc='upper right')
     ax.set(title='log Power spectrogram')
 
+    result = np.vstack((times, cent))
     if save_to_csv :
-        result = np.vstack((times, cent))
         np.savetxt('centroid.csv', result.T, fmt="%.3f")
 
-    return fig, ax
+    return fig, ax, result
 
 
-def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = True) -> None :
+def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False) -> None :
 
     rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.99)
     rolloff_min = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.01)
@@ -45,13 +45,13 @@ def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = Tr
     ax.legend(loc='lower right')
     ax.set(title='log Power spectrogram')
 
+    result = np.vstack((times, rolloff, rolloff_min))
     if save_to_csv :
-        result = np.vstack((times, rolloff, rolloff_min))
         np.savetxt('rollOffFreq.csv', result.T, fmt="%.3f")
 
-    return fig, ax
+    return fig, ax, result
 
-def spectral_bandwidth_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = True) -> None :
+def spectral_bandwidth_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False) -> None :
     
     S, phase = librosa.magphase(librosa.stft(y=y))
     spec_bw = librosa.feature.spectral_bandwidth(S=S)
@@ -72,9 +72,11 @@ def spectral_bandwidth_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = T
     ax[1].plot(times, centroid[0], label='Spectral centroid', color='w')
     ax[1].legend(loc='lower right')
 
+    result = np.vstack((times, spec_bw))
     if save_to_csv :
-        result = np.vstack((times, spec_bw))
         np.savetxt('spectral_bandwidth.csv', result.T, fmt="%.3f")
+    
+    return fig, ax, result
 
 
 def harmonic_percussive_source_separation(y: npt.ArrayLike, sr: int) -> None :
@@ -97,5 +99,7 @@ def harmonic_percussive_source_separation(y: npt.ArrayLike, sr: int) -> None :
                              y_axis='log', x_axis='time', ax=ax[2])
     ax[2].set(title='Percussive power spectrogram')
     fig.colorbar(img, ax=ax, format='%+2.0f dB')
+
+    return fig, ax
 
 
