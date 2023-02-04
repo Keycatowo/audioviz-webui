@@ -38,5 +38,8 @@ streamlit run home.py
 
 ## 版本記錄
 
-### v0.1.0 完成Basic Information
+### v0.2.0 加入Pitch Estimation
+![](fig/v0.2.0.gif)
+
+### v0.1.0 加入Basic Information
 ![](fig/v0.1.0.gif)
