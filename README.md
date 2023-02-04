@@ -34,3 +34,9 @@ streamlit run home.py
 + BUG：多頁面的拉杆在切換的時候顯示會不同步，但功能正常
 + Feature：包裝成Docker
 + Feature：部署到Vercel demo
+
+
+## 版本記錄
+
+### v0.1.0 完成Basic Information
+![](fig/v0.1.0.gif)
