@@ -7,18 +7,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
+from src.st_helper import convert_df
 
 
-@st.experimental_memo
-def convert_df(df):
-   return df.to_csv(index=False).encode('utf-8')
 
-#%%
+#%% 頁面說明
 with st.expander("頁面說明(Page Description)"):
     with open("docs/1-Basic Information.md", "r", encoding="utf-8") as f:
         st.markdown(f.read())
 
-#%%
+#%% 上傳檔案區塊
 with st.expander("上傳檔案(Upload Files)"):
     file = st.file_uploader("Upload your music library", type=["mp3", "wav", "ogg"])
 
@@ -44,7 +42,7 @@ with st.expander("上傳檔案(Upload Files)"):
 #%%
 if file is not None:
 
-    # 選擇聲音片段
+    ### Start of 選擇聲音片段 ###
     st.subheader("Select a segment of the audio")
     # 建立一個滑桿，可以選擇聲音片段，使用時間長度為單位
     start_time, end_time = st.slider("Select a segment of the audio", 
@@ -60,9 +58,9 @@ if file is not None:
     y_sub = y_all[start_index:end_index]
     # 建立一個y_sub的播放器
     st.audio(y_sub, format="audio/ogg", sample_rate=sr)
-
     # 計算y_sub所對應時間的x軸
     x_sub = np.arange(len(y_sub))/sr
+    ### End of 選擇聲音片段 ###
 
 
     # 繪製聲音波形圖
