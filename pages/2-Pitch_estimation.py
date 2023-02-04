@@ -7,12 +7,12 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.pitch_estimation import plot_mel_spectrogram, plot_constant_q_transform, pitch_class_type_one_vis
-from src.st_helper import convert_df
+from src.st_helper import convert_df, show_readme
 
 #%% 頁面說明
-with st.expander("頁面說明(Page Description)"):
-    with open("docs/2-Pitch_estimation.md", "r", encoding="utf-8") as f:
-        st.markdown(f.read())
+#%% 頁面說明
+show_readme("docs/2-Pitch_estimation.md")
+
 
 #%% 上傳檔案區塊
 with st.expander("上傳檔案(Upload Files)"):

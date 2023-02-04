@@ -7,14 +7,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.st_helper import convert_df
+from src.st_helper import convert_df, show_readme
 
 
 
 #%% 頁面說明
-with st.expander("頁面說明(Page Description)"):
-    with open("docs/1-Basic Information.md", "r", encoding="utf-8") as f:
-        st.markdown(f.read())
+show_readme("docs/1-Basic Information.md")
+
 
 #%% 上傳檔案區塊
 with st.expander("上傳檔案(Upload Files)"):
