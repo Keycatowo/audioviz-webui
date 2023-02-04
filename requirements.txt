@@ -7,3 +7,4 @@ matplotlib
 plotly
 scikit-learn
 soundfile 
+libfmp
