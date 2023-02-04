@@ -5,9 +5,11 @@
 
 ## 安裝及執行方式
 
+### 本地端執行
 ```sh
 # 下載專案
 git clone https://github.com/Keycatowo/music-analysis.git
+cd music-analysis
 
 # 安裝相關套件
 pip install -r requirements.txt
@@ -15,6 +17,9 @@ pip install -r requirements.txt
 # 執行
 streamlit run home.py
 ```
+
+### 網頁範例
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://nthu-music-tools.streamlit.app/)
 
 ## 範例
 ![](fig/demo.gif)
