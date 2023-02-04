@@ -25,7 +25,7 @@ streamlit run home.py
 ![](fig/demo.gif)
 
 ## 開發日誌
-+ 2023/02/04：完成part2功能
++ 2023/02/04：完成part2、part3、poart4、part6功能
 + 2023/02/03：完成part1功能、完成part1使用說明
 + 2023/01/19：新增part6功能草稿、更新README安裝方式
 + 2023/01/03：新增part1, 3功能草稿
@@ -43,8 +43,26 @@ streamlit run home.py
 
 ## 版本記錄
 
-### v0.2.0 加入Pitch Estimation
+### v0.6.1-alpha 整理發佈alpha版
++ 整理程式與README
++ 發佈alpha版程式
+
+### v0.6.0-pre-alpha 加入Structure Analysis
+![](fig/v0.6.0.gif)
+
+### v0.5.0-pre-alpha 加入Timber Analysis
+![](fig/v0.5.0.gif)
+
+### v0.4.0-pre-alpha 加入Chord Recognition
+![](fig/v0.4.0.gif)
+
+### v0.3.0-pre-alpha 加入Beat Tracking
+![](fig/v0.3.0.gif)
+
+### v0.2.0-pre-alpha 加入Pitch Estimation
 ![](fig/v0.2.0.gif)
 
-### v0.1.0 加入Basic Information
+### v0.1.0-pre-alpha 加入Basic Information
 ![](fig/v0.1.0.gif)
+
+### v0.0.1-pre-alpha 建立專案

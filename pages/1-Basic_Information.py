@@ -1,6 +1,5 @@
 #%%
 import streamlit as st
-from src.basic_info import plot_waveform, signal_RMS_analysis
 import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
@@ -8,8 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.st_helper import convert_df, show_readme
-
-
+from src.basic_info import plot_waveform, signal_RMS_analysis
 
 #%% 頁面說明
 show_readme("docs/1-Basic Information.md")
@@ -31,10 +29,6 @@ with st.expander("上傳檔案(Upload Files)"):
         st.write(f"Sample rate: `{sr}`")
         duration = float(np.round(len(y)/sr-0.005, 2)) # 時間長度，取小數點後2位，向下取整避免超過音檔長度
         st.write(f"Duration(s): `{duration}`")
-        
-        # st.write(f"{type(file)}")
-        # st.write(f"{type(y)}")
-        # st.write(f"{type(sr)}")
 
         y_all = y
 
@@ -85,8 +79,6 @@ if file is not None:
     st.subheader("signal_RMS_analysis")
     fig1_3, ax1_3, times, rms = signal_RMS_analysis(y_sub)
     st.pyplot(fig1_3)
-    # st.write("Times of RMS:", times)
-    # st.write("RMS:", rms)
 
     # 繪製聲音Spectrogram圖(使用librosa繪製)
     st.subheader("Spectrogram")
