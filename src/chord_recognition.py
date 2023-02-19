@@ -195,7 +195,7 @@ def plot_chord_recognition(y, sr) :
     ax[1, 0].set_yticklabels(chord_labels)
     ax[1, 0].grid()
     plt.tight_layout()
-    return fig, ax
+    return fig, ax, chord_max
 
 def plot_binary_template_chord_recognition(y, sr) :
     
@@ -214,3 +214,15 @@ def plot_binary_template_chord_recognition(y, sr) :
                             title='Binary templates of the chord recognition result')
     plt.tight_layout()
     return fig, ax
+
+
+def chord_table(chord_max):
+    
+    chord_labels = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] + ['Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm']
+    
+    # 計算chord_max依照第一個軸的最大值的index
+    chord_max_index = np.argmax(chord_max, axis=0)
+    # 用index找出對應的chord_labels
+    chord_results = [chord_labels[i] for i in chord_max_index]
+    
+    return chord_results
