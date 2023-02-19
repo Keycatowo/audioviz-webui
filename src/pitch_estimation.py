@@ -20,7 +20,7 @@ def plot_mel_spectrogram(y: npt.ArrayLike, sr:int, with_pitch : bool = True) :
         f0, voiced_flag, voiced_probs = librosa.pyin(y,
                                                      fmin=librosa.note_to_hz('C2'),
                                                      fmax=librosa.note_to_hz('C7'))
-        times = librosa.times_like(f0)
+        times = librosa.times_like(f0, sr)
 
         fig, ax = plt.subplots()
         img = librosa.display.specshow(S_dB, x_axis='time',
