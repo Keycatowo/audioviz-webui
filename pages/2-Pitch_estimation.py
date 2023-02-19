@@ -68,7 +68,19 @@ if file is not None:
     # chroma
     st.subheader("Chroma")
     chroma = librosa.feature.chroma_stft(y=y_sub, sr=sr)
+    chroma_t = librosa.times_like(chroma, sr)
     st.write(chroma)
+    st.write(chroma_t)
+    st.download_button(
+        label="Download chroma",
+        data=convert_df(pd.DataFrame(chroma)),
+        file_name="chroma_value.csv",
+    )
+    st.download_button(
+        label="Download chroma time",
+        data=convert_df(pd.DataFrame(chroma_t)),
+        file_name="chroma_time.csv",
+    )
 
     # Pitch class type one
     st.subheader("Pitch class type one")
