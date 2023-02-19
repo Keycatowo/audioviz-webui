@@ -20,7 +20,7 @@ def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = False) -> N
 
     fig, ax = plt.subplots(nrows=2, sharex=True)
     librosa.display.specshow(librosa.amplitude_to_db(D, ref=np.max),
-                             x_axis='time', y_axis='log', ax=ax[0])
+                             x_axis='time', y_axis='log', ax=ax[0], sr=sr)
     ax[0].set(title='Power spectrogram')
     ax[0].label_outer()
     ax[1].plot(times, o_env, label='Onset strength')
