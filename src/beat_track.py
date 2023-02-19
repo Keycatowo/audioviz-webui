@@ -80,37 +80,49 @@ def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_
 
 def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512) :
     
-    fig, ax = plt.subplots(nrows=2, sharex=True)
+    fig, ax = plt.subplots()
     onset_env = librosa.onset.onset_strength(y=y, sr=sr, aggregate=np.median)
     tempo, beats = librosa.beat.beat_track(onset_envelope=onset_env, sr=sr)
     times = librosa.times_like(onset_env, sr=sr, hop_length=spec_hop_length)
 
     if spec_type == 'mel':
-
         M = librosa.feature.melspectrogram(y=y, sr=sr, hop_length=spec_hop_length)
         librosa.display.specshow(librosa.power_to_db(M, ref=np.max), 
                                  y_axis='mel', x_axis='time', hop_length=spec_hop_length,
-                                 ax=ax[0], sr=sr)
-        ax[0].label_outer()
-        ax[0].set(title='Mel spectrogram')
+                                 ax=ax, sr=sr)
+        ax.set(title='Mel spectrogram')
     
     if spec_type == 'stft':
-
         S = np.abs(librosa.stft(y))
         img = librosa.display.specshow(librosa.amplitude_to_db(S, ref=np.max), 
-                                       y_axis='log', x_axis='time', ax=ax[0], sr=sr)
+                                       y_axis='log', x_axis='time', ax=ax, sr=sr)
         
-        ax[0].label_outer()
-        ax[0].set_title('Power spectrogram')
+        ax.set_title('Power spectrogram')
         # fig.colorbar(img, ax=ax[0], format="%+2.0f dB")
     
-    ax[1].plot(times, librosa.util.normalize(onset_env), label='Onset strength')
-    ax[1].vlines(times[beats], 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
-    tempoString = 'Tempo = %.2f'% (tempo)
-    ax[1].plot([], [], ' ', label = tempoString)
-    ax[1].legend()
+    # ax[1].plot(times, librosa.util.normalize(onset_env), label='Onset strength')
+    # ax[1].vlines(times[beats], 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
+    # tempoString = 'Tempo = %.2f'% (tempo)
+    # ax[1].plot([], [], ' ', label = tempoString)
+    # ax[1].legend()
 
-    y_beats = librosa.clicks(frames=beats, sr=sr, length=len(y))
+    # y_beats = librosa.clicks(frames=beats, sr=sr, length=len(y))
+    
+    return fig, ax, (times, onset_env, tempo, beats)
+
+def beat_plot(times, onset_env, tempo, beats, y_len, sr):
+    """
+        重新繪製beat
+    """
+    
+    fig, ax = plt.subplots()
+    ax.plot(times, librosa.util.normalize(onset_env), label='Onset strength')
+    ax.vlines(times[beats], 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
+    tempoString = 'Tempo = %.2f'% (tempo)
+    ax.plot([], [], ' ', label = tempoString)
+    ax.legend()
+    
+    y_beats = librosa.clicks(frames=beats, sr=sr, length=y_len)
     
     return fig, ax, y_beats
 

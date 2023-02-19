@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot
+from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot, beat_plot
 from src.st_helper import convert_df, show_readme
 import numpy as np
 
@@ -96,11 +96,17 @@ if file is not None:
         st.subheader("beat_analysis")
         spec_type = st.selectbox("spec_type", ["mel", "stft"])
         spec_hop_length = st.number_input("spec_hop_length", value=512)
-        fig3_3, ax3_3, y_beats = beat_analysis(y_sub, sr,
+        fig3_3a, ax3_3b, beats_data = beat_analysis(y_sub, sr,
             spec_type=spec_type,
             spec_hop_length=spec_hop_length
         )
-        st.pyplot(fig3_3)
+        b_times, b_env, b_tempo, b_beats = beats_data
+        st.pyplot(fig3_3a)
+        b_clicks = st.multiselect("Beats",
+                                  list(range(len(b_env))), list(b_beats))
+        fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr)
+        st.pyplot(fig3_3b)
+        
 
 
     # predominant_local_pulse
