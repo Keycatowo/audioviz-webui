@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram
+from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot
 from src.st_helper import convert_df, show_readme
 import numpy as np
 
@@ -68,8 +68,14 @@ if file is not None:
     # onsets_detection
     with tab1:
         st.subheader("onsets_detection")
-        fig3_1, ax3_1, y_onset_clicks = onsets_detection(y_sub, sr)
-        st.pyplot(fig3_1)
+        fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr)
+        o_env, o_times, onset_frames = onset_data
+        st.pyplot(fig3_1a)
+        # 設定onset_frame調整區塊
+        clicks = st.multiselect("Onset", 
+                                list(range(len(o_env))), list(onset_frames))
+        fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr)
+        st.pyplot(fig3_1b)
         st.audio(y_onset_clicks, format="audio/ogg", sample_rate=sr)
 
     # onset_strength

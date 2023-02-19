@@ -11,30 +11,38 @@ from numpy import typing as npt
 import typing
 
 
-def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = False) -> None :
-
+def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = False) -> tuple :
+    """
+        計算音檔的onset frames
+    """
     o_env = librosa.onset.onset_strength(y=y, sr=sr)
     times = librosa.times_like(o_env, sr=sr)
     onset_frames = librosa.onset.onset_detect(onset_envelope=o_env, sr=sr)
     D = np.abs(librosa.stft(y))
 
-    fig, ax = plt.subplots(nrows=2, sharex=True)
+    fig, ax = plt.subplots()
     librosa.display.specshow(librosa.amplitude_to_db(D, ref=np.max),
-                             x_axis='time', y_axis='log', ax=ax[0], sr=sr)
-    ax[0].set(title='Power spectrogram')
-    ax[0].label_outer()
-    ax[1].plot(times, o_env, label='Onset strength')
-    ax[1].vlines(times[onset_frames], 0, o_env.max(), color='r', alpha=0.9,
-                 linestyle='--', label='Onsets')
-    ax[1].legend()
+                             x_axis='time', y_axis='log', ax=ax, sr=sr)
+    ax.set(title='Power spectrogram')
 
+    #// if write_to_wav :
+    #//     sf.write('withOnsets.wav', y+y_onset_clicks, sr, subtype='PCM_24')
 
-    y_onset_clicks = librosa.clicks(frames=onset_frames, sr=sr, length=len(y))
-    if write_to_wav :
-        sf.write('withOnsets.wav', y+y_onset_clicks, sr, subtype='PCM_24')
+    return fig, ax, (o_env, times, onset_frames)
 
+def onset_click_plot(o_env, times, onset_frames, y_len, sr):
+    """
+        重新繪製onset frames
+    """
+    fig, ax = plt.subplots()
+    ax.plot(times, o_env, label='Onset strength')
+    ax.vlines(times[onset_frames], 0, o_env.max(), color='r', alpha=0.9,
+              linestyles='--', label='Onsets')
+    ax.legend()
+    
+    y_onset_clicks = librosa.clicks(frames=onset_frames, sr=sr, length=y_len)
     return fig, ax, y_onset_clicks
-
+    
 
 def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_mel: bool = False, cqt: bool = False) :
     
