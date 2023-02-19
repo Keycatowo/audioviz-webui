@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.st_helper import convert_df, show_readme
-from src.pitch_estimation import plot_mel_spectrogram, plot_constant_q_transform, pitch_class_type_one_vis
+from src.pitch_estimation import plot_mel_spectrogram, plot_constant_q_transform, pitch_class_type_one_vis, pitch_class_histogram_chroma
 
 #%% 頁面說明
 show_readme("docs/2-Pitch_estimation.md")
@@ -89,13 +89,14 @@ if file is not None:
 
     # Pitch class type one
     with tab4:
-        st.subheader("Pitch class type one")
-        fig2_3, ax2_3, df_pitch_class = pitch_class_type_one_vis(y_sub, sr)
+        st.subheader("Pitch class(chroma)")
+        high_res = st.checkbox("High resolution", value=False)
+        fig2_3, ax2_3, df_pitch_class = pitch_class_histogram_chroma(y_sub, sr, high_res)
         st.pyplot(fig2_3)
         st.write(df_pitch_class)
         st.download_button(
-            label="Download pitch class type one",
+            label="Download pitch class(chroma)",
             data=convert_df(pd.DataFrame(df_pitch_class)),
-            file_name="pitch_class_type_one.csv",
+            file_name="Pitch_class(chroma).csv",
             mime="text/csv",
         )

@@ -89,4 +89,80 @@ def pitch_class_type_one_vis(y: npt.ArrayLike, sr: int) -> None :
     return fig, ax, result
     
     
+def pitch_class_histogram_chroma(y: npt.ArrayLike, sr: int, higher_resolution: bool, save_to_csv: bool = False) -> None :
+
+    S = np.abs(librosa.stft(y))
+    notes = np.array(librosa.key_to_notes('C:maj')) # For x-axis legend
+
+    if not higher_resolution :
+
+        chroma = librosa.feature.chroma_stft(S=S, sr=sr)
+        valid_pitch = np.empty(np.shape(chroma)) # To count pitch
+        valid_pitch[chroma < 0.7] = 0
+        valid_pitch[chroma >= 0.7] = 1
+        total = np.sum(valid_pitch)
+
+        # To compute the probability
+        # WARNING: (12,) means pure 1-D array
+        occurProbs = np.empty((12,))
+        for i in range(0, 12) :
+            occurProbs[i] = np.sum(valid_pitch[i]) / total
+
+        ticks = range(12)
+        colors = ['lightcoral', 'goldenrod', 'lightseagreen', 'indigo', 'lightcoral', 
+                 'goldenrod', 'lightseagreen', 'indigo', 'lightcoral', 'goldenrod', 
+                 'lightseagreen', 'indigo']
+        xLegend = notes
+
+        fig, ax = plt.subplots()
+        ax.bar(ticks,occurProbs * 100, align='center', color=colors)
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(xLegend)
+        ax.set_title("Pitch Class Histogram")
+        ax.set_xlabel("Note")
+        ax.set_ylabel("Occurrences %")
     
+    if higher_resolution :
+
+        chroma = librosa.feature.chroma_stft(S=S, sr=sr, n_chroma=120)
+        valid_pitch = np.empty(np.shape(chroma)) # To count pitch
+        valid_pitch[chroma < 0.7] = 0
+        valid_pitch[chroma >= 0.7] = 1
+        total = np.sum(valid_pitch)
+
+        occurProbs = np.empty((120,))
+        for i in range(0, 120) :
+            occurProbs[i] = np.sum(valid_pitch[i]) / total
+        
+        ticks = range(120)
+        fig, ax = plt.subplots()
+        xLegend = list()
+        for i in range(120) :
+            if i % 10 == 0 :
+                xLegend.append(notes[i // 10])
+            else :
+                xLegend.append('')
+
+        colors = list()
+        
+        for i in range(120) :
+            if i % 40 >=0 and i % 40 < 10 : colors.append('lightcoral')
+            elif i % 40 >= 10 and i % 40 < 20 : colors.append('goldenrod')
+            elif i % 40 >= 10 and i % 40 < 30 : colors.append('lightseagreen')
+            elif i % 40 >= 10 and i % 40 < 40 : colors.append('indigo')
+
+        fig, ax = plt.subplots()
+        ax.bar(ticks,occurProbs * 100, align='center', color = colors)
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(xLegend)
+        ax.set_title("Pitch Class Histogram")
+        ax.set_xlabel("Note")
+        ax.set_ylabel("Occurrence %")
+
+    result = np.vstack((xLegend, np.round(occurProbs, 4))).T
+    if save_to_csv :
+        with open('pitch_class.csv', 'w') as out :
+            for row in result :
+                print(*row, sep=',', file=out) 
+                
+    return fig, ax, result
