@@ -83,23 +83,27 @@ def harmonic_percussive_source_separation(y: npt.ArrayLike, sr: int) -> None :
 
     D = librosa.stft(y)
     H, P = librosa.decompose.hpss(D)
-
-    fig, ax = plt.subplots(nrows=3, sharex=True, sharey=True)
+    t = librosa.frames_to_time(np.arange(D.shape[1]), sr=sr)
+    
+    fig, ax = plt.subplots(nrows=3, sharex=False, sharey=False)
+    # 設置子圖之間的水平間距和垂直間距
+    plt.subplots_adjust(hspace=0.6, wspace=0.3)
     img = librosa.display.specshow(librosa.amplitude_to_db(np.abs(D),ref=np.max),
                                    y_axis='log', x_axis='time', ax=ax[0])
     ax[0].set(title='Full power spectrogram')
-    ax[0].label_outer()
+    #// ax[0].label_outer()
+    ax[0].set_xlabel('') # 不顯示x軸名稱
 
     librosa.display.specshow(librosa.amplitude_to_db(np.abs(H), ref=np.max(np.abs(D))),
                              y_axis='log', x_axis='time', ax=ax[1])
     ax[1].set(title='Harmonic power spectrogram')
-    ax[1].label_outer()
+    #// ax[1].label_outer()
+    ax[1].set_xlabel('') # 不顯示x軸名稱
 
     librosa.display.specshow(librosa.amplitude_to_db(np.abs(P), ref=np.max(np.abs(D))),
                              y_axis='log', x_axis='time', ax=ax[2])
     ax[2].set(title='Percussive power spectrogram')
     fig.colorbar(img, ax=ax, format='%+2.0f dB')
 
-    return fig, ax
-
+    return fig, ax, (D, H, P, t)
 

@@ -99,6 +99,27 @@ if file is not None:
 
     # harmonic_percussive_source_separation
     st.subheader("Harmonic Percussive Source Separation")
-    fig6_4, ax6_4 = harmonic_percussive_source_separation(y_sub, sr)
+    fig6_4, ax6_4, (Harmonic_data) = harmonic_percussive_source_separation(y_sub, sr)
+    D, H, P, t = Harmonic_data
     st.pyplot(fig6_4)
     
+    st.download_button(
+        label="Download Full power spectrogram data",
+        data=convert_df(pd.DataFrame(D)),
+        file_name="Full_power_spectrogram.csv",
+    )
+    st.download_button(
+        label="Download Harmonic power spectrogram data",
+        data=convert_df(pd.DataFrame(H)),
+        file_name="Harmonic_power_spectrogram.csv",
+    )
+    st.download_button(
+        label="Download Percussive power spectrogram data",
+        data=convert_df(pd.DataFrame(P)),
+        file_name="Percussive_power_spectrogram.csv",
+    )
+    st.download_button(
+        label="Download Time data",
+        data=convert_df(pd.DataFrame(t)),
+        file_name="Time_scale.csv",
+    )
