@@ -74,7 +74,8 @@ if file is not None:
 
     # rolloff_frequency_analysis
     st.subheader("Rolloff Frequency Analysis")
-    fig6_2, ax6_2, rolloff_value = rolloff_frequency_analysis(y_sub, sr)
+    roll_percent = st.selectbox("Select rolloff frequency", [0.90, 0.95, 0.99])
+    fig6_2, ax6_2, rolloff_value = rolloff_frequency_analysis(y_sub, sr, roll_percent=roll_percent)
     st.pyplot(fig6_2)
     st.write(rolloff_value)
     st.download_button(

@@ -29,9 +29,9 @@ def spectral_centroid_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = Fa
     return fig, ax, result
 
 
-def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False) -> None :
+def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False, roll_percent:float = 0.99) -> None :
 
-    rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.99)
+    rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=roll_percent)
     rolloff_min = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.01)
     times = librosa.times_like(rolloff)
     S, phase = librosa.magphase(librosa.stft(y))
@@ -39,7 +39,7 @@ def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = Fa
     fig, ax = plt.subplots()
     librosa.display.specshow(librosa.amplitude_to_db(S, ref=np.max),
                              y_axis='log', x_axis='time', ax=ax)
-    ax.plot(librosa.times_like(rolloff), rolloff[0], label='Roll-off frequency (0.99)')
+    ax.plot(librosa.times_like(rolloff), rolloff[0], label=f'Roll-off frequency ({roll_percent})')
     ax.plot(librosa.times_like(rolloff), rolloff_min[0], color='w',
             label='Roll-off frequency (0.01)')
     ax.legend(loc='lower right')
