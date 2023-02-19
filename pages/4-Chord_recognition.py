@@ -60,14 +60,18 @@ if file is not None:
     x_sub = np.arange(len(y_sub))/sr
     ### End of 選擇聲音片段 ###
 
+    tab1, tab2 = st.tabs(["Chord Recognition", "Chord Recognition with Binary Template"])
+    
     # plot_chord_recognition 
-    st.subheader("plot_chord_recognition")
-    fig4_1, ax4_1 = plot_chord_recognition(y_sub, sr)
-    st.pyplot(fig4_1)
+    with tab1:
+        st.subheader("plot_chord_recognition")
+        fig4_1, ax4_1 = plot_chord_recognition(y_sub, sr)
+        st.pyplot(fig4_1)
 
     # plot_binary_template_chord_recognition
-    st.subheader("plot_binary_template_chord_recognition")
-    fig4_2, ax4_2 = plot_binary_template_chord_recognition(y_sub, sr)
-    st.pyplot(fig4_2)
+    with tab2:
+        st.subheader("plot_binary_template_chord_recognition")
+        fig4_2, ax4_2 = plot_binary_template_chord_recognition(y_sub, sr)
+        st.pyplot(fig4_2)
 
 

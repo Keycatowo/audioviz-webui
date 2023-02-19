@@ -56,55 +56,69 @@ if file is not None:
     # 計算y_sub所對應時間的x軸
     x_sub = np.arange(len(y_sub))/sr
     ### End of 選擇聲音片段 ###
+    
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "onsets_detection",
+        "onset_strength",
+        "beat_analysis",
+        "predominant_local_pulse",
+        "static_tempo_estimation",
+        "Tempogram"])
 
     # onsets_detection
-    st.subheader("onsets_detection")
-    fig3_1, ax3_1, y_onset_clicks = onsets_detection(y_sub, sr)
-    st.pyplot(fig3_1)
-    st.audio(y_onset_clicks, format="audio/ogg", sample_rate=sr)
+    with tab1:
+        st.subheader("onsets_detection")
+        fig3_1, ax3_1, y_onset_clicks = onsets_detection(y_sub, sr)
+        st.pyplot(fig3_1)
+        st.audio(y_onset_clicks, format="audio/ogg", sample_rate=sr)
 
     # onset_strength
-    st.subheader("onset_strength")
-    onset_strength_standard = st.checkbox("standard", value=True)
-    onset_strength_custom_mel = st.checkbox("custom_mel", value=False)
-    onset_strength_cqt = st.checkbox("cqt", value=False)
-    fig3_2, ax3_2 = plot_onset_strength(y_sub, sr,
-        standard=onset_strength_standard,
-        custom_mel=onset_strength_custom_mel,
-        cqt=onset_strength_cqt
-    )
-    st.pyplot(fig3_2)
+    with tab2:
+        st.subheader("onset_strength")
+        onset_strength_standard = st.checkbox("standard", value=True)
+        onset_strength_custom_mel = st.checkbox("custom_mel", value=False)
+        onset_strength_cqt = st.checkbox("cqt", value=False)
+        fig3_2, ax3_2 = plot_onset_strength(y_sub, sr,
+            standard=onset_strength_standard,
+            custom_mel=onset_strength_custom_mel,
+            cqt=onset_strength_cqt
+        )
+        st.pyplot(fig3_2)
 
     # beat_analysis
-    st.subheader("beat_analysis")
-    spec_type = st.selectbox("spec_type", ["mel", "stft"])
-    spec_hop_length = st.number_input("spec_hop_length", value=512)
-    fig3_3, ax3_3, y_beats = beat_analysis(y_sub, sr,
-        spec_type=spec_type,
-        spec_hop_length=spec_hop_length
-    )
-    st.pyplot(fig3_3)
+    with tab3:
+        st.subheader("beat_analysis")
+        spec_type = st.selectbox("spec_type", ["mel", "stft"])
+        spec_hop_length = st.number_input("spec_hop_length", value=512)
+        fig3_3, ax3_3, y_beats = beat_analysis(y_sub, sr,
+            spec_type=spec_type,
+            spec_hop_length=spec_hop_length
+        )
+        st.pyplot(fig3_3)
 
 
     # predominant_local_pulse
-    st.subheader("predominant_local_pulse")
-    fig3_4, ax3_4 = predominant_local_pulse(y_sub, sr)
-    st.pyplot(fig3_4)
+    with tab4:
+        st.subheader("predominant_local_pulse")
+        fig3_4, ax3_4 = predominant_local_pulse(y_sub, sr)
+        st.pyplot(fig3_4)
 
     # static_tempo_estimation
-    st.subheader("static_tempo_estimation")
-    static_tempo_estimation_hop_length = st.number_input("hop_length", value=512)
-    fig3_5, ax3_5 = static_tempo_estimation(y_sub, sr,
-        hop_length=static_tempo_estimation_hop_length
-    )
-    st.pyplot(fig3_5)
+    with tab5:
+        st.subheader("static_tempo_estimation")
+        static_tempo_estimation_hop_length = st.number_input("hop_length", value=512)
+        fig3_5, ax3_5 = static_tempo_estimation(y_sub, sr,
+            hop_length=static_tempo_estimation_hop_length
+        )
+        st.pyplot(fig3_5)
 
     # Tempogram
-    st.subheader("Tempogram")
-    tempogram_type = st.selectbox("tempogram_type", ["fourier", "autocorr"], index=1)
-    tempogram_hop_length = st.number_input("Tempogram_hop_length", value=512)
-    fig3_6, ax3_6 = plot_tempogram(y_sub, sr,
-        type=tempogram_type,
-        hop_length=tempogram_hop_length
-    )
-    st.pyplot(fig3_6)
+    with tab6:
+        st.subheader("Tempogram")
+        tempogram_type = st.selectbox("tempogram_type", ["fourier", "autocorr"], index=1)
+        tempogram_hop_length = st.number_input("Tempogram_hop_length", value=512)
+        fig3_6, ax3_6 = plot_tempogram(y_sub, sr,
+            type=tempogram_type,
+            hop_length=tempogram_hop_length
+        )
+        st.pyplot(fig3_6)

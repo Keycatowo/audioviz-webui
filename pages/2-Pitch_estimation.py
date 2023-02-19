@@ -54,42 +54,48 @@ if file is not None:
     x_sub = np.arange(len(y_sub))/sr
     ### End of 選擇聲音片段 ###
 
+    tab1, tab2, tab3, tab4 = st.tabs(["Mel-frequency spectrogram", "Constant-Q transform", "Chroma", "Pitch class"])
+
     # Mel-frequency spectrogram
-    st.subheader("Mel-frequency spectrogram")
-    with_pitch = st.checkbox("Show pitch", value=True)
-    fig2_1, ax2_1 = plot_mel_spectrogram(y_sub, sr, with_pitch=with_pitch)
-    st.pyplot(fig2_1)
+    with tab1:
+        st.subheader("Mel-frequency spectrogram")
+        with_pitch = st.checkbox("Show pitch", value=True)
+        fig2_1, ax2_1 = plot_mel_spectrogram(y_sub, sr, with_pitch=with_pitch)
+        st.pyplot(fig2_1)
 
     # Constant-Q transform
-    st.subheader("Constant-Q transform")
-    fig2_2, ax2_2 = plot_constant_q_transform(y_sub, sr)
-    st.pyplot(fig2_2)
+    with tab2:
+        st.subheader("Constant-Q transform")
+        fig2_2, ax2_2 = plot_constant_q_transform(y_sub, sr)
+        st.pyplot(fig2_2)
     
     # chroma
-    st.subheader("Chroma")
-    chroma = librosa.feature.chroma_stft(y=y_sub, sr=sr)
-    chroma_t = librosa.times_like(chroma, sr)
-    st.write(chroma)
-    st.write(chroma_t)
-    st.download_button(
-        label="Download chroma",
-        data=convert_df(pd.DataFrame(chroma)),
-        file_name="chroma_value.csv",
-    )
-    st.download_button(
-        label="Download chroma time",
-        data=convert_df(pd.DataFrame(chroma_t)),
-        file_name="chroma_time.csv",
-    )
+    with tab3:
+        st.subheader("Chroma")
+        chroma = librosa.feature.chroma_stft(y=y_sub, sr=sr)
+        chroma_t = librosa.times_like(chroma, sr)
+        st.write(chroma)
+        st.write(chroma_t)
+        st.download_button(
+            label="Download chroma",
+            data=convert_df(pd.DataFrame(chroma)),
+            file_name="chroma_value.csv",
+        )
+        st.download_button(
+            label="Download chroma time",
+            data=convert_df(pd.DataFrame(chroma_t)),
+            file_name="chroma_time.csv",
+        )
 
     # Pitch class type one
-    st.subheader("Pitch class type one")
-    fig2_3, ax2_3, df_pitch_class = pitch_class_type_one_vis(y_sub, sr)
-    st.pyplot(fig2_3)
-    st.write(df_pitch_class)
-    st.download_button(
-        label="Download pitch class type one",
-        data=convert_df(pd.DataFrame(df_pitch_class)),
-        file_name="pitch_class_type_one.csv",
-        mime="text/csv",
-    )
+    with tab4:
+        st.subheader("Pitch class type one")
+        fig2_3, ax2_3, df_pitch_class = pitch_class_type_one_vis(y_sub, sr)
+        st.pyplot(fig2_3)
+        st.write(df_pitch_class)
+        st.download_button(
+            label="Download pitch class type one",
+            data=convert_df(pd.DataFrame(df_pitch_class)),
+            file_name="pitch_class_type_one.csv",
+            mime="text/csv",
+        )
