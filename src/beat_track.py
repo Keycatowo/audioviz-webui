@@ -39,11 +39,11 @@ def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = False) -> N
 def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_mel: bool = False, cqt: bool = False) :
     
     D = np.abs(librosa.stft(y))
-    times = librosa.times_like(D)
+    times = librosa.times_like(D, sr)
 
     fig, ax = plt.subplots(nrows=2, sharex=True)
     librosa.display.specshow(librosa.amplitude_to_db(D, ref=np.max),
-                             y_axis='log', x_axis='time', ax=ax[0])
+                             y_axis='log', x_axis='time', ax=ax[0], sr=sr)
     
     ax[0].set(title='Power spectrogram')
     ax[0].label_outer()
@@ -83,7 +83,7 @@ def beat_analysis(y: npt.ArrayLike, sr:int, write_to_wav: bool = False, spec_typ
         M = librosa.feature.melspectrogram(y=y, sr=sr, hop_length=spec_hop_length)
         librosa.display.specshow(librosa.power_to_db(M, ref=np.max), 
                                  y_axis='mel', x_axis='time', hop_length=spec_hop_length,
-                                 ax=ax[0])
+                                 ax=ax[0], sr=sr)
         ax[0].label_outer()
         ax[0].set(title='Mel spectrogram')
     
@@ -91,11 +91,11 @@ def beat_analysis(y: npt.ArrayLike, sr:int, write_to_wav: bool = False, spec_typ
 
         S = np.abs(librosa.stft(y))
         img = librosa.display.specshow(librosa.amplitude_to_db(S, ref=np.max), 
-                                       y_axis='log', x_axis='time', ax=ax[0])
+                                       y_axis='log', x_axis='time', ax=ax[0], sr=sr)
         
         ax[0].label_outer()
         ax[0].set_title('Power spectrogram')
-        fig.colorbar(img, ax=ax[0], format="%+2.0f dB")
+        # fig.colorbar(img, ax=ax[0], format="%+2.0f dB")
     
     ax[1].plot(times, librosa.util.normalize(onset_env), label='Onset strength')
     ax[1].vlines(times[beats], 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
