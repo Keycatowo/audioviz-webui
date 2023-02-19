@@ -33,7 +33,7 @@ def plot_waveform(ax, y: npt.ArrayLike, sr: int, start_time: float = 0.0, end_ti
     return
 
 
-def signal_RMS_analysis(y: npt.ArrayLike, show_plot: bool = True, to_csv: bool = False) :
+def signal_RMS_analysis(y: npt.ArrayLike, show_plot: bool = True) :
 
     fig, ax = plt.subplots()
 
@@ -42,9 +42,5 @@ def signal_RMS_analysis(y: npt.ArrayLike, show_plot: bool = True, to_csv: bool =
 
     if show_plot :
         ax.plot(times, rms[0])
-
-    if to_csv :
-        info = np.vstack((times, rms[0])).T
-        np.savetxt('time_to_rms.csv', info, fmt="%.3f", delimiter=",")
 
     return fig, ax, times, rms

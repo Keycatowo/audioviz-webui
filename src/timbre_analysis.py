@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import scipy
 
 
-def spectral_centroid_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False) -> None :
+def spectral_centroid_analysis(y: npt.ArrayLike, sr: int) -> None :
 
     S, phase = librosa.magphase(librosa.stft(y=y))
     cent = librosa.feature.spectral_centroid(S=S)
@@ -23,13 +23,11 @@ def spectral_centroid_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = Fa
     ax.set(title='log Power spectrogram')
 
     result = np.vstack((times, cent))
-    if save_to_csv :
-        np.savetxt('centroid.csv', result.T, fmt="%.3f")
 
     return fig, ax, result
 
 
-def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False, roll_percent:float = 0.99) -> None :
+def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, roll_percent:float = 0.99) -> None :
 
     rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=roll_percent)
     rolloff_min = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.01)
@@ -46,12 +44,10 @@ def rolloff_frequency_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = Fa
     ax.set(title='log Power spectrogram')
 
     result = np.vstack((times, rolloff, rolloff_min))
-    if save_to_csv :
-        np.savetxt('rollOffFreq.csv', result.T, fmt="%.3f")
 
     return fig, ax, result
 
-def spectral_bandwidth_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False) -> None :
+def spectral_bandwidth_analysis(y: npt.ArrayLike, sr: int) -> None :
     
     S, phase = librosa.magphase(librosa.stft(y=y))
     spec_bw = librosa.feature.spectral_bandwidth(S=S)
@@ -73,9 +69,7 @@ def spectral_bandwidth_analysis(y: npt.ArrayLike, sr: int, save_to_csv: bool = F
     ax[1].legend(loc='lower right')
 
     result = np.vstack((times, spec_bw))
-    if save_to_csv :
-        np.savetxt('spectral_bandwidth.csv', result.T, fmt="%.3f")
-    
+
     return fig, ax, result
 
 

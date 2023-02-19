@@ -11,7 +11,7 @@ from numpy import typing as npt
 import typing
 
 
-def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = False) -> tuple :
+def onsets_detection(y: npt.ArrayLike, sr: int) -> tuple :
     """
         計算音檔的onset frames
     """
@@ -25,8 +25,7 @@ def onsets_detection(y: npt.ArrayLike, sr: int, write_to_wav: bool = False) -> t
                              x_axis='time', y_axis='log', ax=ax, sr=sr)
     ax.set(title='Power spectrogram')
 
-    #// if write_to_wav :
-    #//     sf.write('withOnsets.wav', y+y_onset_clicks, sr, subtype='PCM_24')
+
 
     return fig, ax, (o_env, times, onset_frames)
 
@@ -79,7 +78,7 @@ def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_
     return fig, ax
 
 
-def beat_analysis(y: npt.ArrayLike, sr:int, write_to_wav: bool = False, spec_type: str = 'mel', spec_hop_length: int = 512) :
+def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512) :
     
     fig, ax = plt.subplots(nrows=2, sharex=True)
     onset_env = librosa.onset.onset_strength(y=y, sr=sr, aggregate=np.median)
@@ -112,8 +111,7 @@ def beat_analysis(y: npt.ArrayLike, sr:int, write_to_wav: bool = False, spec_typ
     ax[1].legend()
 
     y_beats = librosa.clicks(frames=beats, sr=sr, length=len(y))
-    if write_to_wav :
-        sf.write('stereo_file.wav', y+y_beats, sr, subtype='PCM_24')
+    
     return fig, ax, y_beats
 
 def predominant_local_pulse(y: npt.ArrayLike, sr:int) -> None :

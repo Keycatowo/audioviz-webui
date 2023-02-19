@@ -57,7 +57,7 @@ def plot_constant_q_transform(y: npt.ArrayLike, sr:int) :
     return fig, ax
 
 
-def pitch_class_type_one_vis(y: npt.ArrayLike, sr: int, save_to_csv: bool = False) -> None :
+def pitch_class_type_one_vis(y: npt.ArrayLike, sr: int) -> None :
 
     S = np.abs(librosa.stft(y))
     chroma = librosa.feature.chroma_stft(S=S, sr=sr)
@@ -77,12 +77,7 @@ def pitch_class_type_one_vis(y: npt.ArrayLike, sr: int, save_to_csv: bool = Fals
         occurProbs[i] = np.sum(count_pitch[i]) / total
 
     result = np.vstack((notes, np.round(occurProbs, 4))).T
-    if save_to_csv :
-        with open('pitch_class.csv', 'w') as out :
-            for row in result :
-                print(*row, sep=',', file=out)
-        
-    
+
     ticks = range(12)
     fig, ax = plt.subplots()
     plt.title("Pitch Class")
