@@ -76,6 +76,9 @@ if file is not None:
                                 list(range(len(o_env))), list(onset_frames))
         fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr)
         st.pyplot(fig3_1b)
+        df_onset = pd.DataFrame([clicks, o_times[clicks]])
+        df_onset.index = ["frames", "time"]
+        st.write(df_onset)
         st.audio(y_onset_clicks, format="audio/ogg", sample_rate=sr)
 
     # onset_strength
@@ -106,7 +109,10 @@ if file is not None:
                                   list(range(len(b_env))), list(b_beats))
         fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr)
         st.pyplot(fig3_3b)
-        
+        df_beats = pd.DataFrame([b_clicks, b_times[b_clicks]])
+        df_beats.index = ["frames", "time"]
+        st.write(df_beats)
+        st.audio(y_beat_clicks, format="audio/ogg", sample_rate=sr)
 
 
     # predominant_local_pulse
