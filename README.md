@@ -25,6 +25,10 @@ streamlit run home.py
 ![](fig/demo.gif)
 
 ## 開發日誌
++ 2023/02/19：修正功能錯誤、改為tabs結構、新增部分操作功能
+    + Part2: Chrome下載csv功能、12/120 Classes圖
+    + Part3: Onset與Beats調整區塊
+    + Part6：可調整rollof選項、下載Spectrogram的csv
 + 2023/02/04：完成part2、part3、poart4、part6功能
 + 2023/02/03：完成part1功能、完成part1使用說明
 + 2023/01/19：新增part6功能草稿、更新README安裝方式
@@ -42,6 +46,14 @@ streamlit run home.py
 
 
 ## 版本記錄
+
+### v0.7.0-alpha
++ 修正sample rate錯誤
++ 改為tabs結構
++ 新增部分操作功能
+    + Part2: Chrome下載csv功能、12/120 Classes圖
+    + Part3: Onset與Beats調整區塊
+    + Part6：可調整rollof選項、下載Spectrogram的csv
 
 ### v0.6.1-alpha 整理發佈alpha版
 + 整理程式與README
