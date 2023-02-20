@@ -1,11 +1,12 @@
 # music-analysis
 音樂分析工具
 ## 程式
-相關程式來源於[這裡](https://github.com/TrangDuLam/NTHU_Music_AI_Tools)。
+相關程式來源於[TrangDuLam](https://github.com/TrangDuLam/NTHU_Music_AI_Tools)。
 
 ## 安裝及執行方式
 
-### 本地端執行
+### 本地端執行(Windows + Python)
+需要有Python環境，並安裝相關套件，執行方式如下：
 ```sh
 # 下載專案
 git clone https://github.com/Keycatowo/music-analysis.git
@@ -18,7 +19,15 @@ pip install -r requirements.txt
 streamlit run home.py
 ```
 
+### 本地端執行(Windows免安裝)
+如本地無法安裝Python，可使用包含Python的打包版本，執行方式如下：
++ 至[Release](https://github.com/Keycatowo/music-analysis/releases)下載`music-analysis-package.zip`
++ 解壓縮後，打開`music-analysis-package`資料夾
++ 執行`run.bat`，即可開啟網頁
++ 如果沒有自動開啟網頁，請至瀏覽器輸入`http://localhost:8501/`
+
 ### 網頁範例
+因為執行記憶體限制，網頁範例無法上傳太長的音樂檔案
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://nthu-music-tools.streamlit.app/)
 
 ## 範例
@@ -45,36 +54,3 @@ streamlit run home.py
 + Feature：部署到Vercel demo
 
 
-## 版本記錄
-
-### v0.7.0-alpha
-+ 修正sample rate錯誤
-+ 改為tabs結構
-+ 新增部分操作功能
-    + Part2: Chrome下載csv功能、12/120 Classes圖
-    + Part3: Onset與Beats調整區塊
-    + Part6：可調整rollof選項、下載Spectrogram的csv
-
-### v0.6.1-alpha 整理發佈alpha版
-+ 整理程式與README
-+ 發佈alpha版程式
-
-### v0.6.0-pre-alpha 加入Structure Analysis
-![](fig/v0.6.0.gif)
-
-### v0.5.0-pre-alpha 加入Timber Analysis
-![](fig/v0.5.0.gif)
-
-### v0.4.0-pre-alpha 加入Chord Recognition
-![](fig/v0.4.0.gif)
-
-### v0.3.0-pre-alpha 加入Beat Tracking
-![](fig/v0.3.0.gif)
-
-### v0.2.0-pre-alpha 加入Pitch Estimation
-![](fig/v0.2.0.gif)
-
-### v0.1.0-pre-alpha 加入Basic Information
-![](fig/v0.1.0.gif)
-
-### v0.0.1-pre-alpha 建立專案
