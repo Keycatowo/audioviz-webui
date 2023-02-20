@@ -36,19 +36,24 @@ with st.expander("上傳檔案(Upload Files)"):
 if file is not None:
 
     ### Start of 選擇聲音片段 ###
-    st.subheader("Select a segment of the audio")
-    # 建立一個滑桿，可以選擇聲音片段，使用時間長度為單位
-    start_time, end_time = st.slider("Select a segment of the audio", 
-        0.0, duration, 
-        (0.0, duration), 
-        0.01
-    )
+    with st.expander("選擇聲音片段(Select a segment of the audio)"):
+        
+        # 建立一個滑桿，可以選擇聲音片段，使用時間長度為單位
+        start_time, end_time = st.slider("Select a segment of the audio", 
+            0.0, duration, 
+            (st.session_state.start_time, duration), 
+            0.01
+        )
+        st.session_state.start_time = start_time
+
     st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
 
     # 根據選擇的聲音片段，取出聲音資料
     start_index = int(start_time*sr)
     end_index = int(end_time*sr)
     y_sub = y_all[start_index:end_index]
+
+        
     # 建立一個y_sub的播放器
     st.audio(y_sub, format="audio/ogg", sample_rate=sr)
     # 計算y_sub所對應時間的x軸
