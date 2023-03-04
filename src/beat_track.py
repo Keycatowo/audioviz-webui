@@ -11,7 +11,7 @@ from numpy import typing as npt
 import typing
 
 
-def onsets_detection(y: npt.ArrayLike, sr: int) -> tuple :
+def onsets_detection(y: npt.ArrayLike, sr: int, shift_array: npt.ArrayLike) -> tuple :
     """
         計算音檔的onset frames
     """
@@ -23,27 +23,30 @@ def onsets_detection(y: npt.ArrayLike, sr: int) -> tuple :
     fig, ax = plt.subplots()
     librosa.display.specshow(librosa.amplitude_to_db(D, ref=np.max),
                              x_axis='time', y_axis='log', ax=ax, sr=sr)
+    ax.set_xticks(shift_array - shift_array[0],
+                      shift_array)
+    ax.autoscale()
     ax.set(title='Power spectrogram')
-
 
 
     return fig, ax, (o_env, times, onset_frames)
 
-def onset_click_plot(o_env, times, onset_frames, y_len, sr):
+def onset_click_plot(o_env, times, onset_frames, y_len, sr, shift_time):
     """
         重新繪製onset frames
     """
     fig, ax = plt.subplots()
-    ax.plot(times, o_env, label='Onset strength')
-    ax.vlines(times[onset_frames], 0, o_env.max(), color='r', alpha=0.9,
+    ax.plot(times + shift_time, o_env, label='Onset strength')
+    ax.vlines(times[onset_frames] + shift_time, 0, o_env.max(), color='r', alpha=0.9,
               linestyles='--', label='Onsets')
+    ax.autoscale()
     ax.legend()
     
     y_onset_clicks = librosa.clicks(frames=onset_frames, sr=sr, length=y_len)
     return fig, ax, y_onset_clicks
     
 
-def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_mel: bool = False, cqt: bool = False) :
+def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_mel: bool = False, cqt: bool = False, shift_array: npt.ArrayLike = None) :
     
     D = np.abs(librosa.stft(y))
     times = librosa.times_like(D, sr)
@@ -74,11 +77,14 @@ def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_
 
     ax[1].legend()
     ax[1].set(ylabel='Normalized strength', yticks=[])
+    ax[1].set_xticks(shift_array - shift_array[0],
+                         shift_array)
+    ax[1].autoscale()
 
     return fig, ax
 
 
-def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512) :
+def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512, shift_array: npt.ArrayLike = None) :
     
     fig, ax = plt.subplots()
     onset_env = librosa.onset.onset_strength(y=y, sr=sr, aggregate=np.median)
@@ -100,6 +106,10 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
         ax.set_title('Power spectrogram')
         # fig.colorbar(img, ax=ax[0], format="%+2.0f dB")
     
+    ax.set_xticks(shift_array - shift_array[0],
+                      shift_array)
+    ax.autoscale()
+    
     # ax[1].plot(times, librosa.util.normalize(onset_env), label='Onset strength')
     # ax[1].vlines(times[beats], 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
     # tempoString = 'Tempo = %.2f'% (tempo)
@@ -110,14 +120,14 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
     
     return fig, ax, (times, onset_env, tempo, beats)
 
-def beat_plot(times, onset_env, tempo, beats, y_len, sr):
+def beat_plot(times, onset_env, tempo, beats, y_len, sr, shift_time):
     """
         重新繪製beat
     """
     
     fig, ax = plt.subplots()
-    ax.plot(times, librosa.util.normalize(onset_env), label='Onset strength')
-    ax.vlines(times[beats], 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
+    ax.plot(times + shift_time, librosa.util.normalize(onset_env), label='Onset strength')
+    ax.vlines(times[beats] + shift_time, 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
     tempoString = 'Tempo = %.2f'% (tempo)
     ax.plot([], [], ' ', label = tempoString)
     ax.legend()
@@ -126,7 +136,7 @@ def beat_plot(times, onset_env, tempo, beats, y_len, sr):
     
     return fig, ax, y_beats
 
-def predominant_local_pulse(y: npt.ArrayLike, sr:int) -> None :
+def predominant_local_pulse(y: npt.ArrayLike, sr:int, shift_time:float=0) -> None :
 
     onset_env = librosa.onset.onset_strength(y=y, sr=sr)
     pulse = librosa.beat.plp(onset_envelope=onset_env, sr=sr)
@@ -134,8 +144,8 @@ def predominant_local_pulse(y: npt.ArrayLike, sr:int) -> None :
     times = librosa.times_like(pulse, sr=sr)
 
     fig, ax = plt.subplots()
-    ax.plot(times, librosa.util.normalize(pulse),label='PLP')
-    ax.vlines(times[beats_plp], 0, 1, alpha=0.5, color='r', 
+    ax.plot(times + shift_time, librosa.util.normalize(pulse),label='PLP')
+    ax.vlines(times[beats_plp] + shift_time, 0, 1, alpha=0.5, color='r', 
              linestyle='--', label='PLP Beats')
     ax.legend()
     ax.set(title="Predominant local pulse")
@@ -180,7 +190,7 @@ def static_tempo_estimation(y: npt.ArrayLike, sr: int, hop_length: int = 512) ->
   return fig, ax
 
 
-def plot_tempogram(y: npt.ArrayLike, sr: int, type: str = 'autocorr', hop_length: int = 512) -> None :
+def plot_tempogram(y: npt.ArrayLike, sr: int, type: str = 'autocorr', hop_length: int = 512, shift_array: npt.ArrayLike = None) -> tuple :
     
     oenv = librosa.onset.onset_strength(y=y, sr=sr, hop_length=hop_length)
     tempogram = librosa.feature.fourier_tempogram(onset_envelope=oenv, sr=sr, hop_length=hop_length)
@@ -202,6 +212,9 @@ def plot_tempogram(y: npt.ArrayLike, sr: int, type: str = 'autocorr', hop_length
         ax.axhline(tempo, color='w', linestyle='--', alpha=1, label='Estimated tempo={:g}'.format(tempo))
         ax.legend(loc='upper right')
         # ax.title('Autocorrelation Tempogram')
+    ax.set_xticks(shift_array - shift_array[0],
+                      shift_array)
+    ax.autoscale()
     
     return fig, ax
 

@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot, beat_plot
-from src.st_helper import convert_df, show_readme
+from src.st_helper import convert_df, show_readme, get_shift
 import numpy as np
 
 st.title('Beat Tracking')
@@ -70,16 +70,18 @@ if file is not None:
         "static_tempo_estimation",
         "Tempogram"])
 
+    shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
+
     # onsets_detection
     with tab1:
         st.subheader("onsets_detection")
-        fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr)
+        fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr, shift_array)
         o_env, o_times, onset_frames = onset_data
         st.pyplot(fig3_1a)
         # 設定onset_frame調整區塊
         clicks = st.multiselect("Onset", 
                                 list(range(len(o_env))), list(onset_frames))
-        fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr)
+        fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_1b)
         df_onset = pd.DataFrame([clicks, o_times[clicks]])
         df_onset.index = ["frames", "time"]
@@ -95,7 +97,8 @@ if file is not None:
         fig3_2, ax3_2 = plot_onset_strength(y_sub, sr,
             standard=onset_strength_standard,
             custom_mel=onset_strength_custom_mel,
-            cqt=onset_strength_cqt
+            cqt=onset_strength_cqt,
+            shift_array=shift_array
         )
         st.pyplot(fig3_2)
 
@@ -106,15 +109,17 @@ if file is not None:
         spec_hop_length = st.number_input("spec_hop_length", value=512)
         fig3_3a, ax3_3b, beats_data = beat_analysis(y_sub, sr,
             spec_type=spec_type,
-            spec_hop_length=spec_hop_length
+            spec_hop_length=spec_hop_length,
+            shift_array=shift_array
         )
         b_times, b_env, b_tempo, b_beats = beats_data
         st.pyplot(fig3_3a)
+        
         b_clicks = st.multiselect("Beats",
                                   list(range(len(b_env))), list(b_beats))
-        fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr)
+        fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_3b)
-        df_beats = pd.DataFrame([b_clicks, b_times[b_clicks]])
+        df_beats = pd.DataFrame([b_clicks, b_times[b_clicks] + shift_time])
         df_beats.index = ["frames", "time"]
         st.write(df_beats)
         st.audio(y_beat_clicks, format="audio/ogg", sample_rate=sr)
@@ -123,7 +128,7 @@ if file is not None:
     # predominant_local_pulse
     with tab4:
         st.subheader("predominant_local_pulse")
-        fig3_4, ax3_4 = predominant_local_pulse(y_sub, sr)
+        fig3_4, ax3_4 = predominant_local_pulse(y_sub, sr, shift_time)
         st.pyplot(fig3_4)
 
     # static_tempo_estimation
@@ -142,6 +147,7 @@ if file is not None:
         tempogram_hop_length = st.number_input("Tempogram_hop_length", value=512)
         fig3_6, ax3_6 = plot_tempogram(y_sub, sr,
             type=tempogram_type,
-            hop_length=tempogram_hop_length
+            hop_length=tempogram_hop_length,
+            shift_array=shift_array
         )
         st.pyplot(fig3_6)
