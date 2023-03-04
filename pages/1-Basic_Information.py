@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.st_helper import convert_df, show_readme
+from src.st_helper import convert_df, show_readme, get_shift
 from src.basic_info import plot_waveform, signal_RMS_analysis
 
 #%% 頁面說明
@@ -66,12 +66,14 @@ if file is not None:
         "signal_RMS_analysis",
         "Spectrogram",
         "Download RMS data"])
+    
+    shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
 
     # 繪製聲音波形圖
     with tab1:
         st.subheader("Waveform(mathplotlib)")
         fig1_1, ax_1_1 = plt.subplots()
-        ax_1_1.plot(x_sub, y_sub)
+        ax_1_1.plot(x_sub + shift_time, y_sub)
         ax_1_1.set_xlabel("Time(s)")
         ax_1_1.set_ylabel("Amplitude")
         ax_1_1.set_title("Waveform")
@@ -80,7 +82,7 @@ if file is not None:
     # 繪製聲音波形圖
     with tab2:
         st.subheader("Waveform(plotly)")
-        fig1_2 = go.Figure(data=go.Scatter(x=x_sub, y=y_sub))
+        fig1_2 = go.Figure(data=go.Scatter(x=x_sub + shift_time, y=y_sub))
         fig1_2.update_layout(
             title="Waveform",
             xaxis_title="Time(s)",
@@ -91,7 +93,7 @@ if file is not None:
     # 繪製聲音RMS圖
     with tab3:
         st.subheader("signal_RMS_analysis")
-        fig1_3, ax1_3, times, rms = signal_RMS_analysis(y_sub)
+        fig1_3, ax1_3, times, rms = signal_RMS_analysis(y_sub, shift_time=shift_time)
         st.pyplot(fig1_3)   
 
     # 繪製聲音Spectrogram圖(使用librosa繪製)
@@ -101,7 +103,10 @@ if file is not None:
         stft_db = librosa.amplitude_to_db(abs(stft))
         # add a figure
         fig1_4, ax1_4 = plt.subplots()
-        ax1_4 = librosa.display.specshow(stft_db, x_axis='time', y_axis='log')
+        librosa.display.specshow(stft_db, x_axis='time', y_axis='log', sr=sr, ax=ax1_4)
+        ax1_4.set_xticks(shift_array - shift_array[0],
+                         shift_array)
+        ax1_4.autoscale()
         st.pyplot(fig1_4)
 
     # 下載RMS資料
@@ -121,3 +126,4 @@ if file is not None:
                 key="download-csv"
             )
         
+# %%
