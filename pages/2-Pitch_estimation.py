@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
+import seaborn as sns
 from src.st_helper import convert_df, show_readme, get_shift
 from src.pitch_estimation import plot_mel_spectrogram, plot_constant_q_transform, pitch_class_type_one_vis, pitch_class_histogram_chroma
 
@@ -78,18 +79,34 @@ if file is not None:
     # chroma
     with tab3:
         st.subheader("Chroma")
+        
         chroma = librosa.feature.chroma_stft(y=y_sub, sr=sr)
         chroma_t = librosa.times_like(chroma, sr)
-        st.write(chroma)
-        st.write(chroma_t)
+        df_chroma = pd.DataFrame(chroma)
+        df_chroma_t = pd.DataFrame({"Time(s)": chroma_t})
+        df_chroma_t["Time(frame)"] = list(range(len(chroma_t)))
+        df_chroma_t["Time(s)"] = df_chroma_t["Time(s)"] + shift_time
+        df_chroma_t = df_chroma_t[["Time(frame)", "Time(s)"]]
+        
+        fig2_3, ax2_3 = plt.subplots(figsize=(10, 4))
+        sns.heatmap(chroma, ax=ax2_3)
+        ax2_3.set_title("Chroma")
+        ax2_3.set_xlabel("Time(frame)")
+        ax2_3.invert_yaxis()
+        st.pyplot(fig2_3)
+        
+        st.write("Chroma value")
+        st.write(df_chroma)
         st.download_button(
             label="Download chroma",
-            data=convert_df(pd.DataFrame(chroma)),
+            data=convert_df(df_chroma),
             file_name="chroma_value.csv",
         )
+        st.write("Chroma time")
+        st.write(df_chroma_t)
         st.download_button(
             label="Download chroma time",
-            data=convert_df(pd.DataFrame(chroma_t)),
+            data=convert_df(df_chroma_t),
             file_name="chroma_time.csv",
         )
 
@@ -97,8 +114,8 @@ if file is not None:
     with tab4:
         st.subheader("Pitch class(chroma)")
         high_res = st.checkbox("High resolution", value=False)
-        fig2_3, ax2_3, df_pitch_class = pitch_class_histogram_chroma(y_sub, sr, high_res)
-        st.pyplot(fig2_3)
+        fig2_4, ax2_4, df_pitch_class = pitch_class_histogram_chroma(y_sub, sr, high_res)
+        st.pyplot(fig2_4)
         st.write(df_pitch_class)
         st.download_button(
             label="Download pitch class(chroma)",
