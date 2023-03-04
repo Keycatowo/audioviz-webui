@@ -10,7 +10,12 @@ from numpy import typing as npt
 import typing
 
 
-def plot_mel_spectrogram(y: npt.ArrayLike, sr:int, with_pitch : bool = True) :
+def plot_mel_spectrogram(
+        y: npt.ArrayLike, 
+        sr:int, 
+        shift_array: npt.ArrayLike,
+        with_pitch : bool = True,
+    ):
 
     S = librosa.feature.melspectrogram(y=y, sr=sr)
     S_dB = librosa.power_to_db(S, ref=np.max)
@@ -21,36 +26,42 @@ def plot_mel_spectrogram(y: npt.ArrayLike, sr:int, with_pitch : bool = True) :
                                                      fmin=librosa.note_to_hz('C2'),
                                                      fmax=librosa.note_to_hz('C7'))
         times = librosa.times_like(f0, sr)
-
-        fig, ax = plt.subplots()
+        
+        fig, ax = plt.subplots(figsize=(12,6))
         img = librosa.display.specshow(S_dB, x_axis='time',
                                        y_axis='mel', sr=sr, 
                                        fmax=8000, ax=ax)
         ax.plot(times, f0, label='f0', color='cyan', linewidth=3)
-        
+        ax.set_xticks(shift_array - shift_array[0],
+                      shift_array)
+        fig.colorbar(img, ax=ax, format='%+2.0f dB')
         ax.legend(loc='upper right')
         ax.set(title='Mel-frequency spectrogram')
 
 
     else :
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(12,6))
         img = librosa.display.specshow(S_dB, x_axis='time',
                                        y_axis='mel', sr=sr, 
                                        fmax=8000, ax=ax)
-
+        ax.set_xticks(shift_array - shift_array[0],
+                      shift_array)
         fig.colorbar(img, ax=ax, format='%+2.0f dB')
         ax.set(title='Mel-frequency spectrogram')
     
     return fig, ax
 
 
-def plot_constant_q_transform(y: npt.ArrayLike, sr:int) :
+def plot_constant_q_transform(y: npt.ArrayLike, sr:int,
+                              shift_array: npt.ArrayLike
+    ) :
 
     C = np.abs(librosa.cqt(y, sr=sr))
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(12,6))
     img = librosa.display.specshow(librosa.amplitude_to_db(C, ref=np.max),
                                    sr=sr, x_axis='time', y_axis='cqt_note', ax=ax)
-
+    ax.set_xticks(shift_array - shift_array[0],
+                      shift_array)
     ax.set_title('Constant-Q power spectrum')
     fig.colorbar(img, ax=ax, format="%+2.0f dB")
 

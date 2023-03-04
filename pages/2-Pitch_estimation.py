@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.st_helper import convert_df, show_readme
+from src.st_helper import convert_df, show_readme, get_shift
 from src.pitch_estimation import plot_mel_spectrogram, plot_constant_q_transform, pitch_class_type_one_vis, pitch_class_histogram_chroma
 
 #%% 頁面說明
@@ -60,17 +60,19 @@ if file is not None:
 
     tab1, tab2, tab3, tab4 = st.tabs(["Mel-frequency spectrogram", "Constant-Q transform", "Chroma", "Pitch class"])
 
+    shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
+
     # Mel-frequency spectrogram
     with tab1:
         st.subheader("Mel-frequency spectrogram")
         with_pitch = st.checkbox("Show pitch", value=True)
-        fig2_1, ax2_1 = plot_mel_spectrogram(y_sub, sr, with_pitch=with_pitch)
+        fig2_1, ax2_1 = plot_mel_spectrogram(y_sub, sr, shift_array, with_pitch)
         st.pyplot(fig2_1)
 
     # Constant-Q transform
     with tab2:
         st.subheader("Constant-Q transform")
-        fig2_2, ax2_2 = plot_constant_q_transform(y_sub, sr)
+        fig2_2, ax2_2 = plot_constant_q_transform(y_sub, sr, shift_array)
         st.pyplot(fig2_2)
     
     # chroma
