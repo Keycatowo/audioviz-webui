@@ -33,14 +33,16 @@ def plot_waveform(ax, y: npt.ArrayLike, sr: int, start_time: float = 0.0, end_ti
     return
 
 
-def signal_RMS_analysis(y: npt.ArrayLike, show_plot: bool = True, shift_time: float = 0.0) :
+def signal_RMS_analysis(y: npt.ArrayLike, shift_time: float = 0.0) :
 
     fig, ax = plt.subplots()
 
     rms = librosa.feature.rms(y = y)
     times = librosa.times_like(rms) + shift_time
 
-    if show_plot :
-        ax.plot(times, rms[0])
+    ax.plot(times, rms[0])
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('RMS')
+
 
     return fig, ax, times, rms

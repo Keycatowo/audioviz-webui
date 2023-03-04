@@ -25,6 +25,7 @@ def onsets_detection(y: npt.ArrayLike, sr: int, shift_array: npt.ArrayLike) -> t
                              x_axis='time', y_axis='log', ax=ax, sr=sr)
     ax.set_xticks(shift_array - shift_array[0],
                       shift_array)
+    ax.set_xlabel('Time (s)')
     ax.autoscale()
     ax.set(title='Power spectrogram')
 
@@ -41,6 +42,8 @@ def onset_click_plot(o_env, times, onset_frames, y_len, sr, shift_time) -> tuple
               linestyles='--', label='Onsets')
     ax.autoscale()
     ax.legend()
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('Strength')
     
     y_onset_clicks = librosa.clicks(frames=onset_frames, sr=sr, length=y_len)
     return fig, ax, y_onset_clicks
@@ -80,6 +83,7 @@ def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_
     ax[1].set_xticks(shift_array - shift_array[0],
                          shift_array)
     ax[1].autoscale()
+    ax[1].set_xlabel('Time (s)')
 
     return fig, ax
 
@@ -97,7 +101,7 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
                                  y_axis='mel', x_axis='time', hop_length=spec_hop_length,
                                  ax=ax, sr=sr)
         ax.set(title='Mel spectrogram')
-    
+
     if spec_type == 'stft':
         S = np.abs(librosa.stft(y))
         img = librosa.display.specshow(librosa.amplitude_to_db(S, ref=np.max), 
@@ -109,6 +113,7 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
     ax.set_xticks(shift_array - shift_array[0],
                       shift_array)
     ax.autoscale()
+    ax.set_xlabel('Time (s)')
     
     
     return fig, ax, (times, onset_env, tempo, beats)
@@ -124,6 +129,8 @@ def beat_plot(times, onset_env, tempo, beats, y_len, sr, shift_time):
     tempoString = 'Tempo = %.2f'% (tempo)
     ax.plot([], [], ' ', label = tempoString)
     ax.legend()
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('Normalized strength')
     
     y_beats = librosa.clicks(frames=beats, sr=sr, length=y_len)
     
@@ -142,6 +149,8 @@ def predominant_local_pulse(y: npt.ArrayLike, sr:int, shift_time:float=0) -> tup
              linestyle='--', label='PLP Beats')
     ax.legend()
     ax.set(title="Predominant local pulse")
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('Normalized strength')
 
     return fig, ax
 

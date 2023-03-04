@@ -107,6 +107,7 @@ if file is not None:
         ax1_4.set_xticks(shift_array - shift_array[0],
                          shift_array)
         ax1_4.autoscale()
+        ax1_4.set_xlabel("Time(s)")
         st.pyplot(fig1_4)
 
     # 下載RMS資料
@@ -115,7 +116,7 @@ if file is not None:
         
         col1, col2 = st.columns(2)
         with col1:
-            rms_df = pd.DataFrame({"Time": times, "RMS": rms[0,:]})
+            rms_df = pd.DataFrame({"Time(s)": times, "RMS": rms[0,:]})
             st.write(rms_df)
         with col2:
             st.download_button(

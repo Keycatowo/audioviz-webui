@@ -48,6 +48,7 @@ def plot_mel_spectrogram(
                       shift_array)
         fig.colorbar(img, ax=ax, format='%+2.0f dB')
         ax.set(title='Mel-frequency spectrogram')
+    ax.set_xlabel('Time (s)')
     
     return fig, ax
 
@@ -63,6 +64,7 @@ def plot_constant_q_transform(y: npt.ArrayLike, sr:int,
     ax.set_xticks(shift_array - shift_array[0],
                       shift_array)
     ax.set_title('Constant-Q power spectrum')
+    ax.set_xlabel('Time (s)')
     fig.colorbar(img, ax=ax, format="%+2.0f dB")
 
     return fig, ax
