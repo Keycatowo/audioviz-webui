@@ -28,5 +28,6 @@ def get_shift(start_time, end_time):
     if shift_array[-1] != end_time:
         shift_array = np.append(shift_array, end_time)
     
+    shift_array = np.round(shift_array, 1)
     return start_time, shift_array
     
