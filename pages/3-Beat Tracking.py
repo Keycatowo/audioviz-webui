@@ -83,10 +83,15 @@ if file is not None:
                                 list(range(len(o_env))), list(onset_frames))
         fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_1b)
-        df_onset = pd.DataFrame([clicks, o_times[clicks]])
-        df_onset.index = ["frames", "time"]
+        df_onset = pd.DataFrame({"Frame": clicks, "Time(s)": o_times[clicks], "Onset": o_env[clicks]})
         st.write(df_onset)
+        st.download_button(
+            label="Download onset data",
+            data=convert_df(df_onset),
+            file_name="onset_data.csv",
+        )
         st.audio(y_onset_clicks, format="audio/ogg", sample_rate=sr)
+        
 
     # onset_strength
     with tab2:
@@ -119,9 +124,15 @@ if file is not None:
                                   list(range(len(b_env))), list(b_beats))
         fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_3b)
-        df_beats = pd.DataFrame([b_clicks, b_times[b_clicks] + shift_time])
-        df_beats.index = ["frames", "time"]
+        # df_beats = pd.DataFrame([b_clicks, b_times[b_clicks] + shift_time])
+        # df_beats.index = ["frames", "time"]
+        df_beats = pd.DataFrame({"Frame": b_clicks, "Time(s)": b_times[b_clicks] + shift_time, "Beats": b_env[b_clicks]})
         st.write(df_beats)
+        st.download_button(
+            label="Download beats data",
+            data=convert_df(df_beats),
+            file_name="beats_data.csv",
+        )
         st.audio(y_beat_clicks, format="audio/ogg", sample_rate=sr)
 
 
