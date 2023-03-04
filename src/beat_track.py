@@ -31,7 +31,7 @@ def onsets_detection(y: npt.ArrayLike, sr: int, shift_array: npt.ArrayLike) -> t
 
     return fig, ax, (o_env, times, onset_frames)
 
-def onset_click_plot(o_env, times, onset_frames, y_len, sr, shift_time):
+def onset_click_plot(o_env, times, onset_frames, y_len, sr, shift_time) -> tuple:
     """
         重新繪製onset frames
     """
@@ -46,7 +46,7 @@ def onset_click_plot(o_env, times, onset_frames, y_len, sr, shift_time):
     return fig, ax, y_onset_clicks
     
 
-def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_mel: bool = False, cqt: bool = False, shift_array: npt.ArrayLike = None) :
+def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_mel: bool = False, cqt: bool = False, shift_array: npt.ArrayLike = None) -> tuple:
     
     D = np.abs(librosa.stft(y))
     times = librosa.times_like(D, sr)
@@ -110,13 +110,6 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
                       shift_array)
     ax.autoscale()
     
-    # ax[1].plot(times, librosa.util.normalize(onset_env), label='Onset strength')
-    # ax[1].vlines(times[beats], 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
-    # tempoString = 'Tempo = %.2f'% (tempo)
-    # ax[1].plot([], [], ' ', label = tempoString)
-    # ax[1].legend()
-
-    # y_beats = librosa.clicks(frames=beats, sr=sr, length=len(y))
     
     return fig, ax, (times, onset_env, tempo, beats)
 
@@ -136,7 +129,7 @@ def beat_plot(times, onset_env, tempo, beats, y_len, sr, shift_time):
     
     return fig, ax, y_beats
 
-def predominant_local_pulse(y: npt.ArrayLike, sr:int, shift_time:float=0) -> None :
+def predominant_local_pulse(y: npt.ArrayLike, sr:int, shift_time:float=0) -> tuple :
 
     onset_env = librosa.onset.onset_strength(y=y, sr=sr)
     pulse = librosa.beat.plp(onset_envelope=onset_env, sr=sr)
@@ -153,7 +146,7 @@ def predominant_local_pulse(y: npt.ArrayLike, sr:int, shift_time:float=0) -> Non
     return fig, ax
 
 
-def static_tempo_estimation(y: npt.ArrayLike, sr: int, hop_length: int = 512) -> None:
+def static_tempo_estimation(y: npt.ArrayLike, sr: int, hop_length: int = 512) -> tuple:
   
   '''
   To visualize the result of static tempo estimation
