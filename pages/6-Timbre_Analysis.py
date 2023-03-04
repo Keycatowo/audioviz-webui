@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.st_helper import convert_df, show_readme
+from src.st_helper import convert_df, show_readme, get_shift
 from src.timbre_analysis import (
     spectral_centroid_analysis,
     rolloff_frequency_analysis,
@@ -67,15 +67,20 @@ if file is not None:
 
     tab1, tab2, tab3, tab4 = st.tabs(["Spectral Centroid", "Rolloff Frequency", "Spectral Bandwidth", "Harmonic Percussive Source Separation"])
 
+    shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
+
     # spectral_centroid_analysis
     with tab1:
         st.subheader("Spectral Centroid Analysis")
-        fig6_1, ax6_1, centroid_value = spectral_centroid_analysis(y_sub, sr)
+        fig6_1, ax6_1, centroid_value = spectral_centroid_analysis(y_sub, sr, shift_array)
         st.pyplot(fig6_1)
-        st.write(centroid_value)
+        
+        df_centroid = pd.DataFrame(centroid_value.T, columns=["Time(s)", "Centroid"])
+        df_centroid["Time(s)"] = df_centroid["Time(s)"] + shift_time
+        st.write(df_centroid)
         st.download_button(
             label="Download spectral centroid data",
-            data=convert_df(pd.DataFrame(centroid_value)),
+            data=convert_df(df_centroid),
             file_name="centroid.csv",
             mime="text/csv",
         )
@@ -84,12 +89,14 @@ if file is not None:
     with tab2:
         st.subheader("Rolloff Frequency Analysis")
         roll_percent = st.selectbox("Select rolloff frequency", [0.90, 0.95, 0.99])
-        fig6_2, ax6_2, rolloff_value = rolloff_frequency_analysis(y_sub, sr, roll_percent=roll_percent)
+        fig6_2, ax6_2, rolloff_value = rolloff_frequency_analysis(y_sub, sr, roll_percent=roll_percent, shift_array=shift_array)
         st.pyplot(fig6_2)
-        st.write(rolloff_value)
+        df_rolloff = pd.DataFrame(rolloff_value.T, columns=["Time(s)", "Rolloff", "Rolloff_min"])
+        df_rolloff["Time(s)"] = df_rolloff["Time(s)"] + shift_time
+        st.write(df_rolloff)
         st.download_button(
             label="Download rolloff frequency data",
-            data=convert_df(pd.DataFrame(rolloff_value)),
+            data=convert_df(df_rolloff),
             file_name="rolloff.csv",
             mime="text/csv",
         )
@@ -97,12 +104,14 @@ if file is not None:
     # spectral_bandwidth_analysis
     with tab3:
         st.subheader("Spectral Bandwidth Analysis")
-        fig6_3, ax6_3, bandwidth_value = spectral_bandwidth_analysis(y_sub, sr)
+        fig6_3, ax6_3, bandwidth_value = spectral_bandwidth_analysis(y_sub, sr, shift_array)
         st.pyplot(fig6_3)
-        st.write(bandwidth_value)
+        df_bandwidth = pd.DataFrame(bandwidth_value.T, columns=["Time(s)", "Bandwidth"])
+        df_bandwidth["Time(s)"] = df_bandwidth["Time(s)"] + shift_time
+        st.write(df_bandwidth)
         st.download_button(
             label="Download spectral bandwidth data",
-            data=convert_df(pd.DataFrame(bandwidth_value)),
+            data=convert_df(df_bandwidth),
             file_name="bandwidth.csv",
             mime="text/csv",
         )
@@ -110,7 +119,7 @@ if file is not None:
     # harmonic_percussive_source_separation
     with tab4:
         st.subheader("Harmonic Percussive Source Separation")
-        fig6_4, ax6_4, (Harmonic_data) = harmonic_percussive_source_separation(y_sub, sr)
+        fig6_4, ax6_4, (Harmonic_data) = harmonic_percussive_source_separation(y_sub, sr, shift_array)
         D, H, P, t = Harmonic_data
         st.pyplot(fig6_4)
 
@@ -131,6 +140,6 @@ if file is not None:
         )
         st.download_button(
             label="Download Time data",
-            data=convert_df(pd.DataFrame(t)),
+            data=convert_df(pd.DataFrame(t+shift_time, columns=["Time(s)"])),
             file_name="Time_scale.csv",
         )
