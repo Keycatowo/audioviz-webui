@@ -6,11 +6,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
+import seaborn as sns
 from src.st_helper import convert_df, show_readme
 from src.chord_recognition import (
     plot_chord_recognition,
     plot_binary_template_chord_recognition,
-    chord_table
+    chord_table,
+    compute_chromagram,
+    chord_recognition_template,
+    plot_chord
 )
 
 st.title("Chord Recognition")
@@ -71,10 +75,16 @@ if file is not None:
     # plot_chord_recognition 
     with tab1:
         st.subheader("plot_chord_recognition")
-        fig4_1, ax4_1, chord_max = plot_chord_recognition(y_sub, sr)
-        st.pyplot(fig4_1)
-        chord_results = chord_table(chord_max)
-        chord_results_df = pd.DataFrame(chord_results)
+        # 計算
+        chroma, _, _, _, duration = compute_chromagram(y_sub, sr)
+        _, chord_max = chord_recognition_template(chroma, norm_sim='max')
+        
+        fig4_1a, ax4_1a = plot_chord(chroma)
+        st.pyplot(fig4_1a)
+        
+        chord_results_df = pd.DataFrame({
+            "Chord": chord_table(chord_max)
+        })
         st.write(chord_results_df)
         
 

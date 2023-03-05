@@ -176,6 +176,8 @@ def chord_recognition_template(X, norm_sim='1', nonchord=False):
     return chord_sim, chord_max
 
 def plot_chord_recognition(y, sr) :
+    import warnings
+    warnings.warn("This function is deprecated and will be removed in future versions.", DeprecationWarning)
     
     X, Fs_X, x, Fs, x_dur = compute_chromagram(y, sr)
     
@@ -198,6 +200,8 @@ def plot_chord_recognition(y, sr) :
     return fig, ax, chord_max
 
 def plot_binary_template_chord_recognition(y, sr) :
+    import warnings
+    warnings.warn("This function is deprecated and will be removed in future versions.", DeprecationWarning)
     
     X, Fs_X, x, Fs, x_dur = compute_chromagram(y, sr)
     chord_sim, chord_max = chord_recognition_template(X, norm_sim='max')
@@ -226,3 +230,37 @@ def chord_table(chord_max):
     chord_results = [chord_labels[i] for i in chord_max_index]
     
     return chord_results
+
+
+def plot_chord(chroma):
+    import seaborn as sns
+    chroma_labels = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] + ['Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm']
+    
+    fig, ax = plt.subplots(2, 1, figsize=(12, 12))
+    
+    sns.heatmap(chroma, ax=ax[0], cmap='coolwarm')
+    ax[0].invert_yaxis()
+    ax[0].set_yticks(
+        np.arange(len(chroma_labels[:12])) + 0.5,
+        chroma_labels[:12],
+        rotation=0,
+    )
+    ax[0].set_ylabel("Chord")
+    ax[0].set_xlabel('Time (frame)')
+    ax[0].set_title('Original')
+    
+    _, chord_max = chord_recognition_template(chroma, norm_sim='max')
+    sns.heatmap(chord_max, ax=ax[1], cmap='crest')
+    ax[1].invert_yaxis()
+    ax[1].set_yticks(
+        np.arange(len(chroma_labels)) + 0.5,
+        chroma_labels,
+        rotation=0,
+    )
+    ax[1].set_ylabel("Chord")
+    ax[1].set_xlabel('Time (frame)')
+    ax[1].set_title('Max Chord')
+    
+    fig.tight_layout(pad=5.0)
+    
+    return fig, ax
