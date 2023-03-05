@@ -264,3 +264,34 @@ def plot_chord(chroma):
     fig.tight_layout(pad=5.0)
     
     return fig, ax
+
+def plot_user_chord(df):
+    
+    import seaborn as sns
+    chroma_labels = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] + ['Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm']
+    
+    # 檢查df["Chord"]無chroma_labels以外的值
+    assert df["Chord"].isin(chroma_labels).all(), "Chord must be in chroma_labels"
+    
+    # 將df["Chord"]轉成chroma_labels的index
+    df["Chord_index"] = df["Chord"].apply(lambda x: chroma_labels.index(x))
+    
+    # 建立一個24 * len(df)的矩陣，並將值設為0
+    chroma = np.zeros((24, len(df)))
+    # 依照df["Chord_index"]的值將chroma的值設為1
+    chroma[df["Chord_index"], np.arange(len(df)),] = 1
+    
+    # 繪圖
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sns.heatmap(chroma, ax=ax, cmap='crest')
+    ax.invert_yaxis()
+    ax.set_yticks(
+        np.arange(len(chroma_labels)) + 0.5,
+        chroma_labels,
+        rotation=0,
+    )
+    ax.set_ylabel("Chord")
+    ax.set_xlabel('Time (frame)')
+    ax.set_title('User Chord')
+    
+    return fig, ax

@@ -7,14 +7,15 @@ import numpy as np
 import librosa
 import pandas as pd
 import seaborn as sns
-from src.st_helper import convert_df, show_readme
+from src.st_helper import convert_df, show_readme, get_shift
 from src.chord_recognition import (
     plot_chord_recognition,
     plot_binary_template_chord_recognition,
     chord_table,
     compute_chromagram,
     chord_recognition_template,
-    plot_chord
+    plot_chord,
+    plot_user_chord
 )
 
 st.title("Chord Recognition")
@@ -71,6 +72,7 @@ if file is not None:
     ### End of 選擇聲音片段 ###
 
     tab1, tab2 = st.tabs(["Chord Recognition", "Chord Recognition with Binary Template"])
+    shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
     
     # plot_chord_recognition 
     with tab1:
@@ -82,10 +84,20 @@ if file is not None:
         fig4_1a, ax4_1a = plot_chord(chroma)
         st.pyplot(fig4_1a)
         
+        # 建立chord result dataframe
+        sec_per_frame = duration/chroma.shape[1]
         chord_results_df = pd.DataFrame({
+            "Frame": np.arange(chroma.shape[1]),
+            "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
             "Chord": chord_table(chord_max)
         })
-        st.write(chord_results_df)
+        chord_results_df = st.experimental_data_editor(
+            chord_results_df,
+            use_container_width=True
+        )
+        
+        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
+        st.pyplot(fig4_1b)
         
 
     # plot_binary_template_chord_recognition
