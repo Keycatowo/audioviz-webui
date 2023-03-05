@@ -8,3 +8,4 @@ plotly
 scikit-learn
 soundfile 
 libfmp
+psutil==5.9.1
