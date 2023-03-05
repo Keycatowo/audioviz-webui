@@ -77,12 +77,12 @@ if file is not None:
     # STFT Chroma 
     with tab1:
         chroma, _, _, _, duration = compute_chromagram(y_sub, sr)
-        fig4_1, ax4_1 = plot_chord(chroma, title="STFT Chroma")
+        fig4_1, ax4_1 = plot_chord(chroma, "STFT Chroma")
         st.pyplot(fig4_1)
         
     with tab2:
         _, chord_max = chord_recognition_template(chroma, norm_sim='max')
-        fig4_2, ax4_2 = plot_chord(chord_max, title="Chord Recognition Result", cmap="crest", include_minor=True)
+        fig4_2, ax4_2 = plot_chord(chord_max, "Chord Recognition Result", cmap="crest", include_minor=True)
         st.pyplot(fig4_2)
     
     with tab3:
