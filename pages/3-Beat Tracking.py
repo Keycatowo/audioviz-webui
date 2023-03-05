@@ -84,7 +84,7 @@ if file is not None:
         fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_1b)
         df_onset = pd.DataFrame({"Frame": clicks, "Time(s)": o_times[clicks], "Onset": o_env[clicks]})
-        st.write(df_onset)
+        st.dataframe(df_onset, use_container_width=True)
         st.download_button(
             label="Download onset data",
             data=convert_df(df_onset),
@@ -127,7 +127,7 @@ if file is not None:
         # df_beats = pd.DataFrame([b_clicks, b_times[b_clicks] + shift_time])
         # df_beats.index = ["frames", "time"]
         df_beats = pd.DataFrame({"Frame": b_clicks, "Time(s)": b_times[b_clicks] + shift_time, "Beats": b_env[b_clicks]})
-        st.write(df_beats)
+        st.dataframe(df_beats, use_container_width=True)
         st.download_button(
             label="Download beats data",
             data=convert_df(df_beats),

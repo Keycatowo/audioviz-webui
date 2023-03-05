@@ -77,7 +77,7 @@ if file is not None:
         
         df_centroid = pd.DataFrame(centroid_value.T, columns=["Time(s)", "Centroid"])
         df_centroid["Time(s)"] = df_centroid["Time(s)"] + shift_time
-        st.write(df_centroid)
+        st.dataframe(df_centroid, use_container_width=True)
         st.download_button(
             label="Download spectral centroid data",
             data=convert_df(df_centroid),
@@ -93,7 +93,7 @@ if file is not None:
         st.pyplot(fig6_2)
         df_rolloff = pd.DataFrame(rolloff_value.T, columns=["Time(s)", "Rolloff", "Rolloff_min"])
         df_rolloff["Time(s)"] = df_rolloff["Time(s)"] + shift_time
-        st.write(df_rolloff)
+        st.dataframe(df_rolloff, use_container_width=True)
         st.download_button(
             label="Download rolloff frequency data",
             data=convert_df(df_rolloff),
@@ -108,7 +108,7 @@ if file is not None:
         st.pyplot(fig6_3)
         df_bandwidth = pd.DataFrame(bandwidth_value.T, columns=["Time(s)", "Bandwidth"])
         df_bandwidth["Time(s)"] = df_bandwidth["Time(s)"] + shift_time
-        st.write(df_bandwidth)
+        st.dataframe(df_bandwidth, use_container_width=True)
         st.download_button(
             label="Download spectral bandwidth data",
             data=convert_df(df_bandwidth),
@@ -127,19 +127,23 @@ if file is not None:
             label="Download Full power spectrogram data",
             data=convert_df(pd.DataFrame(D)),
             file_name="Full_power_spectrogram.csv",
+            use_container_width=True,
         )
         st.download_button(
             label="Download Harmonic power spectrogram data",
             data=convert_df(pd.DataFrame(H)),
             file_name="Harmonic_power_spectrogram.csv",
+            use_container_width=True,
         )
         st.download_button(
             label="Download Percussive power spectrogram data",
             data=convert_df(pd.DataFrame(P)),
             file_name="Percussive_power_spectrogram.csv",
+            use_container_width=True,
         )
         st.download_button(
             label="Download Time data",
             data=convert_df(pd.DataFrame(t+shift_time, columns=["Time(s)"])),
             file_name="Time_scale.csv",
+            use_container_width=True,
         )

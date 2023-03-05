@@ -96,14 +96,14 @@ if file is not None:
         st.pyplot(fig2_3)
         
         st.write("Chroma value")
-        st.write(df_chroma)
+        st.dataframe(df_chroma, use_container_width=True)
         st.download_button(
             label="Download chroma",
             data=convert_df(df_chroma),
             file_name="chroma_value.csv",
         )
         st.write("Chroma time")
-        st.write(df_chroma_t)
+        st.dataframe(df_chroma_t, use_container_width=True)
         st.download_button(
             label="Download chroma time",
             data=convert_df(df_chroma_t),
