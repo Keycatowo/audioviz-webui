@@ -10,8 +10,10 @@ import seaborn as sns
 from src.st_helper import convert_df, show_readme, get_shift
 from src.pitch_estimation import plot_mel_spectrogram, plot_constant_q_transform, pitch_class_type_one_vis, pitch_class_histogram_chroma
 
+
+st.title("Pitch estimation")
 #%% 頁面說明
-show_readme("docs/2-Pitch_estimation.md")
+# show_readme("docs/2-Pitch_estimation.md")
 
 #%% 上傳檔案區塊
 with st.expander("上傳檔案(Upload Files)"):

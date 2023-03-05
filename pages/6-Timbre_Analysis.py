@@ -14,9 +14,9 @@ from src.timbre_analysis import (
     harmonic_percussive_source_separation
 )
 
-
+st.title("Timbre Analysis")
 #%% 頁面說明
-show_readme("docs/6-Timbre Analysis.md")
+# show_readme("docs/6-Timbre Analysis.md")
 
 #%% 上傳檔案區塊
 with st.expander("上傳檔案(Upload Files)"):

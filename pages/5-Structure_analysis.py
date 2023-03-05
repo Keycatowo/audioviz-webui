@@ -11,10 +11,10 @@ from src.structure_analysis import (
     plot_self_similarity
 )
 
-
+st.title("Structure analysis")
 
 #%% 頁面說明
-show_readme("docs/5-Structure_analysis.md")
+# show_readme("docs/5-Structure_analysis.md")
 
 
 #%% 上傳檔案區塊

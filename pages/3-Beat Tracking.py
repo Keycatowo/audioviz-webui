@@ -13,7 +13,7 @@ import numpy as np
 st.title('Beat Tracking')
 
 #%% 頁面說明
-show_readme("docs/3-Beat Tracking.md")
+# show_readme("docs/3-Beat Tracking.md")
 
 #%% 上傳檔案區塊
 with st.expander("上傳檔案(Upload Files)"):

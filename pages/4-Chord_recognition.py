@@ -21,7 +21,7 @@ from src.chord_recognition import (
 st.title("Chord Recognition")
 
 #%% 頁面說明
-show_readme("docs/1-Basic Information.md")
+# show_readme("docs/1-Basic Information.md")
 
 
 #%% 上傳檔案區塊

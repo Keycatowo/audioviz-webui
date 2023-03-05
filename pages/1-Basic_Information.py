@@ -9,8 +9,10 @@ import pandas as pd
 from src.st_helper import convert_df, show_readme, get_shift
 from src.basic_info import plot_waveform, signal_RMS_analysis
 
+
+st.title("Basic Information")
 #%% 頁面說明
-show_readme("docs/1-Basic Information.md")
+# show_readme("docs/1-Basic Information.md")
 
 
 #%% 上傳檔案區塊
