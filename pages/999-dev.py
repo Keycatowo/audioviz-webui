@@ -1,57 +1,18 @@
 #%%
+import pkg_resources
 import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
-import matplotlib.pyplot as plt
-import numpy as np
-import librosa
-import pandas as pd
-from src.st_helper import convert_df, show_readme
 
-
-
-#%% 頁面說明
-
-
-#%% 上傳檔案區塊
-with st.expander("上傳檔案(Upload Files)"):
-    file = st.file_uploader("Upload your music library", type=["mp3", "wav", "ogg"])
-
-    if file is not None:
-        st.audio(file, format="audio/ogg")
-        st.subheader("File information")
-        st.write(f"File name: `{file.name}`", )
-        st.write(f"File type: `{file.type}`")
-        st.write(f"File size: `{file.size}`")
-
-        # 載入音檔
-        y, sr = librosa.load(file, sr=44100)
-        st.write(f"Sample rate: `{sr}`")
-        duration = float(np.round(len(y)/sr-0.005, 2)) # 時間長度，取小數點後2位，向下取整避免超過音檔長度
-        st.write(f"Duration(s): `{duration}`")
-        
-
-        y_all = y
+with st.expander("Show packages"):
+    for dist in pkg_resources.working_set:
+        print(f"{dist.project_name}=={dist.version}")
+        st.write(f"{dist.project_name}=={dist.version}")
 
 #%%
-if file is not None:
+import os
+import psutil
 
-    ### Start of 選擇聲音片段 ###
-    st.subheader("Select a segment of the audio")
-    # 建立一個滑桿，可以選擇聲音片段，使用時間長度為單位
-    start_time, end_time = st.slider("Select a segment of the audio", 
-        0.0, duration, 
-        (0.0, duration), 
-        0.01
-    )
-    st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
-
-    # 根據選擇的聲音片段，取出聲音資料
-    start_index = int(start_time*sr)
-    end_index = int(end_time*sr)
-    y_sub = y_all[start_index:end_index]
-    # 建立一個y_sub的播放器
-    st.audio(y_sub, format="audio/ogg", sample_rate=sr)
-    # 計算y_sub所對應時間的x軸
-    x_sub = np.arange(len(y_sub))/sr
-    ### End of 選擇聲音片段 ###
+with st.expander("Show memory usage"):
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info()
+    print(f"Memory usage: {mem_info.rss / 1024 / 1024:.2f} MB")
+    st.write(f"Memory usage: {mem_info.rss / 1024 / 1024:.2f} MB")
