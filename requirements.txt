@@ -1,6 +1,6 @@
 librosa
 pandas
-streamlit
+streamlit==1.19.0
 numpy
 seaborn
 matplotlib
