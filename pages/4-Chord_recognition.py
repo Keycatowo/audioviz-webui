@@ -71,19 +71,21 @@ if file is not None:
     x_sub = np.arange(len(y_sub))/sr
     ### End of 選擇聲音片段 ###
 
-    tab1, tab2 = st.tabs(["Chord Recognition", "Chord Recognition with Binary Template"])
+    tab1, tab2, tab3, tab4 = st.tabs(["STFT Chroma", "Chords Result (Default)", "Chords Result (User)", "dev"])
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
     
-    # plot_chord_recognition 
+    # STFT Chroma 
     with tab1:
-        st.subheader("plot_chord_recognition")
-        # 計算
         chroma, _, _, _, duration = compute_chromagram(y_sub, sr)
+        fig4_1, ax4_1 = plot_chord(chroma, title="STFT Chroma")
+        st.pyplot(fig4_1)
+        
+    with tab2:
         _, chord_max = chord_recognition_template(chroma, norm_sim='max')
-        
-        fig4_1a, ax4_1a = plot_chord(chroma)
-        st.pyplot(fig4_1a)
-        
+        fig4_2, ax4_2 = plot_chord(chord_max, title="Chord Recognition Result", cmap="crest", include_minor=True)
+        st.pyplot(fig4_2)
+    
+    with tab3:
         # 建立chord result dataframe
         sec_per_frame = duration/chroma.shape[1]
         chord_results_df = pd.DataFrame({
@@ -91,19 +93,20 @@ if file is not None:
             "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
             "Chord": chord_table(chord_max)
         })
+        
+        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
+        st.pyplot(fig4_1b)
+        
         chord_results_df = st.experimental_data_editor(
             chord_results_df,
             use_container_width=True
         )
         
-        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
-        st.pyplot(fig4_1b)
-        
 
     # plot_binary_template_chord_recognition
-    with tab2:
+    with tab4:
         st.subheader("plot_binary_template_chord_recognition")
-        fig4_2, ax4_2 = plot_binary_template_chord_recognition(y_sub, sr)
-        st.pyplot(fig4_2)
+        fig4_4, ax4_4 = plot_binary_template_chord_recognition(y_sub, sr)
+        st.pyplot(fig4_4)
 
 

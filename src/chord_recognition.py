@@ -232,36 +232,24 @@ def chord_table(chord_max):
     return chord_results
 
 
-def plot_chord(chroma):
+def plot_chord(chroma, title="", figsize=(12, 6), cmap="coolwarm", include_minor=False):
     import seaborn as sns
-    chroma_labels = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] + ['Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm']
+    chroma_labels = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    if include_minor:
+        chroma_labels += ['Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm']
     
-    fig, ax = plt.subplots(2, 1, figsize=(12, 12))
+    fig, ax = plt.subplots(figsize=figsize)
     
-    sns.heatmap(chroma, ax=ax[0], cmap='coolwarm')
-    ax[0].invert_yaxis()
-    ax[0].set_yticks(
-        np.arange(len(chroma_labels[:12])) + 0.5,
-        chroma_labels[:12],
-        rotation=0,
-    )
-    ax[0].set_ylabel("Chord")
-    ax[0].set_xlabel('Time (frame)')
-    ax[0].set_title('Original')
-    
-    _, chord_max = chord_recognition_template(chroma, norm_sim='max')
-    sns.heatmap(chord_max, ax=ax[1], cmap='crest')
-    ax[1].invert_yaxis()
-    ax[1].set_yticks(
+    sns.heatmap(chroma, ax=ax, cmap=cmap, linewidths=0.01, linecolor=(1, 1, 1, 0.1))
+    ax.invert_yaxis()
+    ax.set_yticks(
         np.arange(len(chroma_labels)) + 0.5,
         chroma_labels,
         rotation=0,
     )
-    ax[1].set_ylabel("Chord")
-    ax[1].set_xlabel('Time (frame)')
-    ax[1].set_title('Max Chord')
-    
-    fig.tight_layout(pad=5.0)
+    ax.set_ylabel("Chord")
+    ax.set_xlabel('Time (frame)')
+    ax.set_title(title)
     
     return fig, ax
 
@@ -283,7 +271,7 @@ def plot_user_chord(df):
     
     # 繪圖
     fig, ax = plt.subplots(figsize=(12, 6))
-    sns.heatmap(chroma, ax=ax, cmap='crest')
+    sns.heatmap(chroma, ax=ax, cmap='crest', linewidths=0.01, linecolor=(1, 1, 1, 0.1))
     ax.invert_yaxis()
     ax.set_yticks(
         np.arange(len(chroma_labels)) + 0.5,
@@ -292,6 +280,6 @@ def plot_user_chord(df):
     )
     ax.set_ylabel("Chord")
     ax.set_xlabel('Time (frame)')
-    ax.set_title('User Chord')
+    ax.set_title('User Chord Recognition Result')
     
     return fig, ax
