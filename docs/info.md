@@ -1,14 +1,4 @@
-#%%
-import streamlit as st
-
-st.header("Music Analysis Tool")
-
-st.session_state.start_time = 0.0
-
-
-st.write(
-    """
-    # 音樂分析工具
+# 音樂分析工具
 
 此工具整合Pitch_estimation、Beat Tracking、Chord recognition、Structure analysis和Timbre analysis等功能，旨在提供一個簡便易用的音樂分析工具。
 
@@ -63,5 +53,3 @@ st.write(
 音樂分析工具採用 [MIT](https://opensource.org/license/mit/) 授權。
 
 請注意，我們的軟件和內容可能包含第三方軟件庫和組件，這些庫和組件受到其各自的許可證的管轄。有關這些庫和組件的詳細信息，請參閱相應的文檔。
-"""
-)
