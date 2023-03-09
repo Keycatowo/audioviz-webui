@@ -31,5 +31,6 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm64,windows/amd64,darwin
           tags: ${{ steps.meta.outputs.tags }}, latest
           labels: ${{ steps.meta.outputs.labels }}
