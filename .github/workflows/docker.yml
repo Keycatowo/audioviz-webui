@@ -1,6 +1,7 @@
-name: Build&Push Docker to Dockerhub
+name: Dockerhub CI
 
 on:
+  workflow_dispatch:
   push:
     tags:
      - 'v*'
@@ -13,9 +14,6 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - 
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -34,6 +32,5 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}, latest
           labels: ${{ steps.meta.outputs.labels }}
