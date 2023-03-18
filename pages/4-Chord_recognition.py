@@ -84,24 +84,23 @@ if file is not None:
         _, chord_max = chord_recognition_template(chroma, norm_sim='max')
         fig4_2, ax4_2 = plot_chord(chord_max, "Chord Recognition Result", cmap="crest", include_minor=True)
         st.pyplot(fig4_2)
-    
-    with tab3:
-        # 建立chord result dataframe
         sec_per_frame = duration/chroma.shape[1]
         chord_results_df = pd.DataFrame({
             "Frame": np.arange(chroma.shape[1]),
             "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
             "Chord": chord_table(chord_max)
         })
-        
-        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
-        st.pyplot(fig4_1b)
+    
+    with tab3:
+        # 建立chord result dataframe
         
         chord_results_df = st.experimental_data_editor(
             chord_results_df,
             use_container_width=True
         )
         
+        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
+        st.pyplot(fig4_1b)
 
     # plot_binary_template_chord_recognition
     with tab4:
