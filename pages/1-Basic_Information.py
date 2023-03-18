@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.st_helper import convert_df, show_readme, get_shift
-from src.basic_info import plot_waveform, signal_RMS_analysis
+from src.basic_info import plot_waveform, signal_RMS_analysis, plot_spectrogram
 
 
 st.title("Basic Information")
@@ -74,22 +74,13 @@ if file is not None:
     # 繪製聲音波形圖
     with tab1:
         st.subheader("Waveform(mathplotlib)")
-        fig1_1, ax_1_1 = plt.subplots()
-        ax_1_1.plot(x_sub + shift_time, y_sub)
-        ax_1_1.set_xlabel("Time(s)")
-        ax_1_1.set_ylabel("Amplitude")
-        ax_1_1.set_title("Waveform")
+        fig1_1, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False)
         st.pyplot(fig1_1)
     
     # 繪製聲音波形圖
     with tab2:
         st.subheader("Waveform(plotly)")
-        fig1_2 = go.Figure(data=go.Scatter(x=x_sub + shift_time, y=y_sub))
-        fig1_2.update_layout(
-            title="Waveform",
-            xaxis_title="Time(s)",
-            yaxis_title="Amplitude",
-        )
+        fig1_2, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=True) 
         st.plotly_chart(fig1_2)
 
     # 繪製聲音RMS圖
@@ -101,15 +92,7 @@ if file is not None:
     # 繪製聲音Spectrogram圖(使用librosa繪製)
     with tab4:
         st.subheader("Spectrogram")
-        stft = librosa.stft(y_sub)
-        stft_db = librosa.amplitude_to_db(abs(stft))
-        # add a figure
-        fig1_4, ax1_4 = plt.subplots()
-        librosa.display.specshow(stft_db, x_axis='time', y_axis='log', sr=sr, ax=ax1_4)
-        ax1_4.set_xticks(shift_array - shift_array[0],
-                         shift_array)
-        ax1_4.autoscale()
-        ax1_4.set_xlabel("Time(s)")
+        fig1_4, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=True, shift_array=shift_array)
         st.pyplot(fig1_4)
 
     # 下載RMS資料
