@@ -8,7 +8,11 @@ import librosa
 import pandas as pd
 import seaborn as sns
 from src.st_helper import convert_df, show_readme, get_shift
-from src.pitch_estimation import plot_mel_spectrogram, plot_constant_q_transform, pitch_class_type_one_vis, pitch_class_histogram_chroma
+from src.pitch_estimation import (
+    plot_mel_spectrogram, 
+    plot_constant_q_transform, 
+    plot_pitch_class
+)
 
 
 st.title("Pitch estimation")
@@ -115,13 +119,19 @@ if file is not None:
     # Pitch class type one
     with tab4:
         st.subheader("Pitch class(chroma)")
-        high_res = st.checkbox("High resolution", value=False)
-        fig2_4, ax2_4, df_pitch_class = pitch_class_histogram_chroma(y_sub, sr, high_res)
+        resolution_ratio = st.number_input("Use higher resolution", value=1, min_value=1, max_value=10, step=1)
+        fig2_4, ax2_4, df_pitch_class = plot_pitch_class(
+            y_sub, sr, 
+            resolution_ratio=resolution_ratio,
+            use_plotly = False,
+            return_data = True,
+        )
         st.pyplot(fig2_4)
         st.write(df_pitch_class)
+        
         st.download_button(
             label="Download pitch class(chroma)",
-            data=convert_df(pd.DataFrame(df_pitch_class)),
+            data=convert_df(df_pitch_class),
             file_name="Pitch_class(chroma).csv",
             mime="text/csv",
         )
