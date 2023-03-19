@@ -19,10 +19,9 @@ from src.chord_recognition import (
 )
 
 st.title("Chord Recognition")
-
-#%% 頁面說明
-# show_readme("docs/1-Basic Information.md")
-
+#%% 除錯訊息
+if st.session_state.debug:
+    st.write(st.session_state)
 
 #%% 上傳檔案區塊
 with st.expander("上傳檔案(Upload Files)"):
@@ -40,36 +39,48 @@ with st.expander("上傳檔案(Upload Files)"):
         st.write(f"Sample rate: `{sr}`")
         duration = float(np.round(len(y)/sr-0.005, 2)) # 時間長度，取小數點後2位，向下取整避免超過音檔長度
         st.write(f"Duration(s): `{duration}`")
-
         y_all = y
-
-#%%
-if file is not None:
-
-    ### Start of 選擇聲音片段 ###
-    with st.expander("選擇聲音片段(Select a segment of the audio)"):
+        start_time = 0
+        end_time = duration
         
-        # 建立一個滑桿，可以選擇聲音片段，使用時間長度為單位
-        start_time, end_time = st.slider("Select a segment of the audio", 
-            0.0, duration, 
-            (st.session_state.start_time, duration), 
-            0.01
-        )
-        st.session_state.start_time = start_time
+#%% 片段模式
+if file is not None:
+    use_segment = st.sidebar.checkbox("使用片段模式", value=st.session_state["use_segment"], key="segment")
+    st.session_state["use_segment"] = use_segment
+    
+    if use_segment:
+        # 若使用片段模式，則顯示選擇片段的起始時間與結束時間
+        if st.session_state.first_run:
+            start_time = st.sidebar.number_input("開始時間", value=0.0, min_value=0.0, max_value=duration, step=0.01)
+            end_time = st.sidebar.number_input("結束時間", value=duration, min_value=0.0, max_value=duration, step=0.01)
+            st.session_state.first_run = False
+            st.session_state.start_time = start_time
+            st.session_state.end_time = end_time
+        else:
+            start_time = st.sidebar.number_input("開始時間", value=st.session_state.start_time, min_value=0.0, max_value=duration, step=0.01)
+            end_time = st.sidebar.number_input("結束時間", value=st.session_state.end_time, min_value=0.0, max_value=duration, step=0.01)
+            st.session_state.start_time = start_time
+            st.session_state.end_time = end_time
 
-    st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
-
+    else:
+        start_time = 0.0
+        end_index = duration
     # 根據選擇的聲音片段，取出聲音資料
     start_index = int(start_time*sr)
     end_index = int(end_time*sr)
-    y_sub = y_all[start_index:end_index]
+    if end_index <= start_index:
+        st.sidebar.warning("結束時間必須大於開始時間", icon="⚠️")
 
-        
-    # 建立一個y_sub的播放器
-    st.audio(y_sub, format="audio/ogg", sample_rate=sr)
-    # 計算y_sub所對應時間的x軸
+    y_sub = y_all[start_index:end_index]
     x_sub = np.arange(len(y_sub))/sr
-    ### End of 選擇聲音片段 ###
+    
+    if use_segment: 
+        with st.expander("聲音片段(Segment of the audio)"):
+            st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
+            st.audio(y_sub, format="audio/ogg", sample_rate=sr)
+
+#%%
+if file is not None:
 
     tab1, tab2, tab3, tab4 = st.tabs(["STFT Chroma", "Chords Result (Default)", "Chords Result (User)", "dev"])
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
