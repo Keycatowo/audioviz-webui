@@ -6,16 +6,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-import seaborn as sns
 from src.st_helper import convert_df, show_readme, get_shift
-from src.pitch_estimation import (
-    plot_mel_spectrogram, 
-    plot_constant_q_transform, 
-    plot_pitch_class
-)
+from src.basic_info import plot_waveform, signal_RMS_analysis, plot_spectrogram
 
 
-st.title("Pitch estimation")
+st.title("Basic Analysis")
 #%% 除錯訊息
 if st.session_state.debug:
     st.write(st.session_state)
@@ -75,79 +70,60 @@ if file is not None:
         with st.expander("聲音片段(Segment of the audio)"):
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
             st.audio(y_sub, format="audio/ogg", sample_rate=sr)
-            
-            
-            
+    
+
+
 #%% 功能分頁
 if file is not None:
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Mel-frequency spectrogram", "Constant-Q transform", "Chroma", "Pitch class"])
-
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "Waveform(mathplotlib)",
+        "Waveform(plotly)",
+        "signal_RMS_analysis",
+        "Spectrogram",
+        "Download RMS data"])
+    
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
 
-    # Mel-frequency spectrogram
+    # 繪製聲音波形圖
     with tab1:
-        st.subheader("Mel-frequency spectrogram")
-        with_pitch = st.checkbox("Show pitch", value=True)
-        fig2_1, ax2_1 = plot_mel_spectrogram(y_sub, sr, shift_array, with_pitch)
-        st.pyplot(fig2_1)
-
-    # Constant-Q transform
-    with tab2:
-        st.subheader("Constant-Q transform")
-        fig2_2, ax2_2 = plot_constant_q_transform(y_sub, sr, shift_array)
-        st.pyplot(fig2_2)
+        st.subheader("Waveform(mathplotlib)")
+        fig1_1, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False)
+        st.pyplot(fig1_1)
     
-    # chroma
-    with tab3:
-        st.subheader("Chroma")
-        
-        chroma = librosa.feature.chroma_stft(y=y_sub, sr=sr)
-        chroma_t = librosa.times_like(chroma, sr)
-        df_chroma = pd.DataFrame(chroma)
-        df_chroma_t = pd.DataFrame({"Time(s)": chroma_t})
-        df_chroma_t["Time(frame)"] = list(range(len(chroma_t)))
-        df_chroma_t["Time(s)"] = df_chroma_t["Time(s)"] + shift_time
-        df_chroma_t = df_chroma_t[["Time(frame)", "Time(s)"]]
-        
-        fig2_3, ax2_3 = plt.subplots(figsize=(10, 4))
-        sns.heatmap(chroma, ax=ax2_3)
-        ax2_3.set_title("Chroma")
-        ax2_3.set_xlabel("Time(frame)")
-        ax2_3.invert_yaxis()
-        st.pyplot(fig2_3)
-        
-        st.write("Chroma value")
-        st.dataframe(df_chroma, use_container_width=True)
-        st.download_button(
-            label="Download chroma",
-            data=convert_df(df_chroma),
-            file_name="chroma_value.csv",
-        )
-        st.write("Chroma time")
-        st.dataframe(df_chroma_t, use_container_width=True)
-        st.download_button(
-            label="Download chroma time",
-            data=convert_df(df_chroma_t),
-            file_name="chroma_time.csv",
-        )
+    # 繪製聲音波形圖
+    with tab2:
+        st.subheader("Waveform(plotly)")
+        fig1_2, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=True) 
+        st.plotly_chart(fig1_2)
 
-    # Pitch class type one
+    # 繪製聲音RMS圖
+    with tab3:
+        st.subheader("signal_RMS_analysis")
+        fig1_3, ax1_3, times, rms = signal_RMS_analysis(y_sub, shift_time=shift_time)
+        st.pyplot(fig1_3)   
+
+    # 繪製聲音Spectrogram圖(使用librosa繪製)
     with tab4:
-        st.subheader("Pitch class(chroma)")
-        resolution_ratio = st.number_input("Use higher resolution", value=1, min_value=1, max_value=10, step=1)
-        fig2_4, ax2_4, df_pitch_class = plot_pitch_class(
-            y_sub, sr, 
-            resolution_ratio=resolution_ratio,
-            use_plotly = False,
-            return_data = True,
-        )
-        st.pyplot(fig2_4)
-        st.write(df_pitch_class)
+        st.subheader("Spectrogram")
+        fig1_4, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array)
+        st.pyplot(fig1_4)
+
+    # 下載RMS資料
+    with tab5:
+        st.subheader("Download RMS data")
         
-        st.download_button(
-            label="Download pitch class(chroma)",
-            data=convert_df(df_pitch_class),
-            file_name="Pitch_class(chroma).csv",
-            mime="text/csv",
-        )
+        col1, col2 = st.columns(2)
+        with col1:
+            rms_df = pd.DataFrame({"Time(s)": times, "RMS": rms[0,:]})
+            st.dataframe(rms_df, use_container_width=True)
+        with col2:
+            st.download_button(
+                "Doanload RMS data",
+                convert_df(rms_df),
+                "rms.csv",
+                "text/csv",
+                key="download-csv"
+            )
+        
+# %%

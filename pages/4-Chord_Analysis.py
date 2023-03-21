@@ -6,11 +6,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
+import seaborn as sns
 from src.st_helper import convert_df, show_readme, get_shift
-from src.basic_info import plot_waveform, signal_RMS_analysis, plot_spectrogram
+from src.chord_recognition import (
+    plot_chord_recognition,
+    plot_binary_template_chord_recognition,
+    chord_table,
+    compute_chromagram,
+    chord_recognition_template,
+    plot_chord,
+    plot_user_chord
+)
 
-
-st.title("Basic Information")
+st.title("Chord Analysis")
 #%% 除錯訊息
 if st.session_state.debug:
     st.write(st.session_state)
@@ -70,60 +78,45 @@ if file is not None:
         with st.expander("聲音片段(Segment of the audio)"):
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
             st.audio(y_sub, format="audio/ogg", sample_rate=sr)
-    
 
-
-#%% 功能分頁
+#%%
 if file is not None:
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "Waveform(mathplotlib)",
-        "Waveform(plotly)",
-        "signal_RMS_analysis",
-        "Spectrogram",
-        "Download RMS data"])
-    
+    tab1, tab2, tab3, tab4 = st.tabs(["STFT Chroma", "Chords Result (Default)", "Chords Result (User)", "dev"])
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
-
-    # 繪製聲音波形圖
-    with tab1:
-        st.subheader("Waveform(mathplotlib)")
-        fig1_1, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False)
-        st.pyplot(fig1_1)
     
-    # 繪製聲音波形圖
+    # STFT Chroma 
+    with tab1:
+        chroma, _, _, _, duration = compute_chromagram(y_sub, sr)
+        fig4_1, ax4_1 = plot_chord(chroma, "STFT Chroma")
+        st.pyplot(fig4_1)
+        
     with tab2:
-        st.subheader("Waveform(plotly)")
-        fig1_2, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=True) 
-        st.plotly_chart(fig1_2)
-
-    # 繪製聲音RMS圖
+        _, chord_max = chord_recognition_template(chroma, norm_sim='max')
+        fig4_2, ax4_2 = plot_chord(chord_max, "Chord Recognition Result", cmap="crest", include_minor=True)
+        st.pyplot(fig4_2)
+        sec_per_frame = duration/chroma.shape[1]
+        chord_results_df = pd.DataFrame({
+            "Frame": np.arange(chroma.shape[1]),
+            "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
+            "Chord": chord_table(chord_max)
+        })
+    
     with tab3:
-        st.subheader("signal_RMS_analysis")
-        fig1_3, ax1_3, times, rms = signal_RMS_analysis(y_sub, shift_time=shift_time)
-        st.pyplot(fig1_3)   
+        # 建立chord result dataframe
+        
+        chord_results_df = st.experimental_data_editor(
+            chord_results_df,
+            use_container_width=True
+        )
+        
+        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
+        st.pyplot(fig4_1b)
 
-    # 繪製聲音Spectrogram圖(使用librosa繪製)
+    # plot_binary_template_chord_recognition
     with tab4:
-        st.subheader("Spectrogram")
-        fig1_4, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array)
-        st.pyplot(fig1_4)
+        st.subheader("plot_binary_template_chord_recognition")
+        fig4_4, ax4_4 = plot_binary_template_chord_recognition(y_sub, sr)
+        st.pyplot(fig4_4)
 
-    # 下載RMS資料
-    with tab5:
-        st.subheader("Download RMS data")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            rms_df = pd.DataFrame({"Time(s)": times, "RMS": rms[0,:]})
-            st.dataframe(rms_df, use_container_width=True)
-        with col2:
-            st.download_button(
-                "Doanload RMS data",
-                convert_df(rms_df),
-                "rms.csv",
-                "text/csv",
-                key="download-csv"
-            )
-        
-# %%
+

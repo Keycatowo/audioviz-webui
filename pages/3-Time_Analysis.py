@@ -10,7 +10,7 @@ from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis,
 from src.st_helper import convert_df, show_readme, get_shift
 import numpy as np
 
-st.title('Beat Tracking')
+st.title('Time Analysis')
 #%% 除錯訊息
 if st.session_state.debug:
     st.write(st.session_state)
@@ -75,7 +75,7 @@ if file is not None:
 if file is not None:
     
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-        "onsets_detection",
+        "note_detection",
         "onset_strength",
         "beat_analysis",
         "predominant_local_pulse",
@@ -86,7 +86,7 @@ if file is not None:
 
     # onsets_detection
     with tab1:
-        st.subheader("onsets_detection")
+        st.subheader("Note Detection")
         fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr, shift_array)
         o_env, o_times, onset_frames = onset_data
         st.pyplot(fig3_1a)

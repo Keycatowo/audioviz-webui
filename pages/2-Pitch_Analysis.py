@@ -8,17 +8,14 @@ import librosa
 import pandas as pd
 import seaborn as sns
 from src.st_helper import convert_df, show_readme, get_shift
-from src.chord_recognition import (
-    plot_chord_recognition,
-    plot_binary_template_chord_recognition,
-    chord_table,
-    compute_chromagram,
-    chord_recognition_template,
-    plot_chord,
-    plot_user_chord
+from src.pitch_estimation import (
+    plot_mel_spectrogram, 
+    plot_constant_q_transform, 
+    plot_pitch_class
 )
 
-st.title("Chord Recognition")
+
+st.title("Pitch Analysis")
 #%% 除錯訊息
 if st.session_state.debug:
     st.write(st.session_state)
@@ -78,45 +75,79 @@ if file is not None:
         with st.expander("聲音片段(Segment of the audio)"):
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
             st.audio(y_sub, format="audio/ogg", sample_rate=sr)
-
-#%%
+            
+            
+            
+#%% 功能分頁
 if file is not None:
 
-    tab1, tab2, tab3, tab4 = st.tabs(["STFT Chroma", "Chords Result (Default)", "Chords Result (User)", "dev"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Mel-frequency spectrogram", "Constant-Q transform", "Chroma", "Pitch class"])
+
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
-    
-    # STFT Chroma 
+
+    # Mel-frequency spectrogram
     with tab1:
-        chroma, _, _, _, duration = compute_chromagram(y_sub, sr)
-        fig4_1, ax4_1 = plot_chord(chroma, "STFT Chroma")
-        st.pyplot(fig4_1)
-        
+        st.subheader("Mel-frequency spectrogram")
+        with_pitch = st.checkbox("Show pitch", value=True)
+        fig2_1, ax2_1 = plot_mel_spectrogram(y_sub, sr, shift_array, with_pitch)
+        st.pyplot(fig2_1)
+
+    # Constant-Q transform
     with tab2:
-        _, chord_max = chord_recognition_template(chroma, norm_sim='max')
-        fig4_2, ax4_2 = plot_chord(chord_max, "Chord Recognition Result", cmap="crest", include_minor=True)
-        st.pyplot(fig4_2)
-        sec_per_frame = duration/chroma.shape[1]
-        chord_results_df = pd.DataFrame({
-            "Frame": np.arange(chroma.shape[1]),
-            "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
-            "Chord": chord_table(chord_max)
-        })
+        st.subheader("Constant-Q transform")
+        fig2_2, ax2_2 = plot_constant_q_transform(y_sub, sr, shift_array)
+        st.pyplot(fig2_2)
     
+    # chroma
     with tab3:
-        # 建立chord result dataframe
+        st.subheader("Chroma")
         
-        chord_results_df = st.experimental_data_editor(
-            chord_results_df,
-            use_container_width=True
+        chroma = librosa.feature.chroma_stft(y=y_sub, sr=sr)
+        chroma_t = librosa.times_like(chroma, sr)
+        df_chroma = pd.DataFrame(chroma)
+        df_chroma_t = pd.DataFrame({"Time(s)": chroma_t})
+        df_chroma_t["Time(frame)"] = list(range(len(chroma_t)))
+        df_chroma_t["Time(s)"] = df_chroma_t["Time(s)"] + shift_time
+        df_chroma_t = df_chroma_t[["Time(frame)", "Time(s)"]]
+        
+        fig2_3, ax2_3 = plt.subplots(figsize=(10, 4))
+        sns.heatmap(chroma, ax=ax2_3)
+        ax2_3.set_title("Chroma")
+        ax2_3.set_xlabel("Time(frame)")
+        ax2_3.invert_yaxis()
+        st.pyplot(fig2_3)
+        
+        st.write("Chroma value")
+        st.dataframe(df_chroma, use_container_width=True)
+        st.download_button(
+            label="Download chroma",
+            data=convert_df(df_chroma),
+            file_name="chroma_value.csv",
         )
-        
-        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
-        st.pyplot(fig4_1b)
+        st.write("Chroma time")
+        st.dataframe(df_chroma_t, use_container_width=True)
+        st.download_button(
+            label="Download chroma time",
+            data=convert_df(df_chroma_t),
+            file_name="chroma_time.csv",
+        )
 
-    # plot_binary_template_chord_recognition
+    # Pitch class type one
     with tab4:
-        st.subheader("plot_binary_template_chord_recognition")
-        fig4_4, ax4_4 = plot_binary_template_chord_recognition(y_sub, sr)
-        st.pyplot(fig4_4)
-
-
+        st.subheader("Pitch class(chroma)")
+        resolution_ratio = st.number_input("Use higher resolution", value=1, min_value=1, max_value=10, step=1)
+        fig2_4, ax2_4, df_pitch_class = plot_pitch_class(
+            y_sub, sr, 
+            resolution_ratio=resolution_ratio,
+            use_plotly = False,
+            return_data = True,
+        )
+        st.pyplot(fig2_4)
+        st.write(df_pitch_class)
+        
+        st.download_button(
+            label="Download pitch class(chroma)",
+            data=convert_df(df_pitch_class),
+            file_name="Pitch_class(chroma).csv",
+            mime="text/csv",
+        )
