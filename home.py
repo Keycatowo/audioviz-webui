@@ -29,16 +29,18 @@ st.write(
 透過整合現有的各種音樂分析方法與工具，並將其整合在一個簡單易用的網頁工具介面中。
 
 ## 開發團隊
-
++ [Li Su](https://www.iis.sinica.edu.tw/pages/lisu/contact_zh.html)
+    + 中央研究院 資訊科學研究所 音樂與文化科技實驗室(Music & Culture Technology Lab, Institute of Information Science, Academia Sinica, Taiwan)
+    + 計畫主持人 
 + [Yu-Fen Huang](https://yfhuang.info/)
     + 中央研究院 資訊科學研究所 音樂與文化科技實驗室(Music & Culture Technology Lab, Institute of Information Science, Academia Sinica, Taiwan)
     + 計畫主持人
 + [Yu-Lan Chang](https://github.com/TrangDuLam)
     + 清華大學 電機工程所
     + 核心功能開發、套件源碼整合
-+ [Hong-Hsiang Liu](https://url.o-w-o.cc/link)
++ [Hong-Hsiang Liu](https://blog.o-w-o.cc)
     + 清華大學 電機工程所
-    + 互動介面設計、應用部署與配置
+    + 代碼重構、互動介面設計、應用部署與配置
 + Ting-Yi Lu
     + 清華大學 資訊工程所
     + 套件源碼整合、說明文件撰寫
