@@ -1,6 +1,6 @@
 import streamlit as st
 
-@st.experimental_memo
+@st.cache_data
 def convert_df(df):
     """
         Convert a pandas dataframe into a csv file.
