@@ -6,6 +6,7 @@ on:
     tags:
      - 'v*'
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,16 +15,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: main
-      - name: Check if cloud branch exists
+      - name: Delete cloud branch if exists
         run: |
-          if git show-ref --verify --quiet refs/heads/cloud; then
-            echo "Cloud branch exists"
-            git checkout cloud
-          else
-            echo "Creating cloud branch"
-            git checkout -b cloud
-            git push -u origin cloud
-          fi
+          git push --delete origin cloud || echo "No cloud branch to delete"
+      - name: Create and checkout cloud branch
+        run: |
+          git checkout -b cloud
+          git push -f -u origin cloud
       - name: Modify Streamlit config
         run: |
           sed -i 's/maxUploadSize = .*/maxUploadSize = 10/' .streamlit/config.toml
