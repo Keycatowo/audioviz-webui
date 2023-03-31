@@ -26,7 +26,7 @@ jobs:
           fi
       - name: Modify Streamlit config
         run: |
-          sed -i 's/\[server\]/\[server\]\nmaxUploadSize = 10/' .streamlit/config.toml
+          sed -i 's/maxUploadSize = .*/maxUploadSize = 10/' .streamlit/config.toml
       - name: Commit changes and push to cloud branch
         run: |
           git config --global user.email "action@github.com"
