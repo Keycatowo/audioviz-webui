@@ -7,20 +7,29 @@ on:
      - 'v*'
 
 jobs:
-  copy-and-modify:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Copy to Cloud branch
+        with:
+          ref: main
+      - name: Check if cloud branch exists
+        run: |
+          if git show-ref --verify --quiet refs/heads/cloud; then
+            echo "Cloud branch exists"
+            git checkout cloud
+          else
+            echo "Creating cloud branch"
+            git checkout -b cloud
+            git push -u origin cloud
+          fi
+      - name: Modify Streamlit config
+        run: |
+          sed -i 's/\[server\]/\[server\]\nmaxUploadSize = 10/' .streamlit/config.toml
+      - name: Commit changes and push to cloud branch
         run: |
           git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git checkout cloud
+          git config --global user.name "Github Actions"
+          git commit -am "Update Streamlit config"
           git push -u origin cloud
-      - name: Modify Config File
-        run: |
-          sed -i 's/maxUploadSize =.*/maxUploadSize = 10/g' .streamlit/config.toml
-          git add .
-          git commit -m "Modified streamlit config file"
-          git push origin cloud
