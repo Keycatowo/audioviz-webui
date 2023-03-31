@@ -135,7 +135,7 @@ if file is not None:
     # Pitch class type one
     with tab4:
         st.subheader("Pitch class(chroma)")
-        resolution_ratio = st.number_input("Use higher resolution", value=1, min_value=1, max_value=10, step=1)
+        resolution_ratio = st.number_input("Use higher resolution", value=1, min_value=1, max_value=100, step=1)
         fig2_4, ax2_4, df_pitch_class = plot_pitch_class(
             y_sub, sr, 
             resolution_ratio=resolution_ratio,
