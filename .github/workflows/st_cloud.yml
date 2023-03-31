@@ -12,15 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Sync with remote branch
+      - name: Copy to Cloud branch
         run: |
-          git remote update
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
           git checkout cloud
-          git reset --hard origin/cloud
-          git checkout -
-      - name: Create and push cloud branch
-        run: |
-          git checkout -b cloud
           git push -u origin cloud
       - name: Modify Config File
         run: |
