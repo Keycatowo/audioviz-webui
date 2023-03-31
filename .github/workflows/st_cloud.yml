@@ -7,29 +7,20 @@ on:
      - 'v*'
 
 jobs:
-  copy_to_cloud:
+  copy-and-modify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Create cloud branch
+      - name: Copy to Cloud branch
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git branch cloud
-          git push origin cloud
-
-      - name: Copy release to cloud
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git checkout -b cloud
+          git push -u origin cloud
+      - name: Modify Config File
         run: |
-          cp -r ${{ github.event.release.tarball_url }} cloud
-          git add cloud
-          git commit -m "Copy release to cloud"
-          git push origin cloud
-
-      - name: Update config
-        run: |
-          sed -i 's/maxUploadSize = .*/maxUploadSize = 10/' .streamlit/config.toml
-          git add .streamlit/config.toml
-          git commit -m "Update maxUploadSize to 10"
+          sed -i 's/maxUploadSize =.*/maxUploadSize = 10/g' .streamlit/config.toml
+          git add .
+          git commit -m "Modified streamlit config file"
           git push origin cloud
