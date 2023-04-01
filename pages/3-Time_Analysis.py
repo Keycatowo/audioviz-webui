@@ -102,7 +102,11 @@ if file is not None:
             data=convert_df(df_onset),
             file_name="onset_data.csv",
         )
-        st.audio(y_onset_clicks, format="audio/ogg", sample_rate=sr)
+        with st.expander("Onset Click Preview"):
+            onset_remix_ratio = st.slider("Onset Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
+            y_onset_remix = y_onset_clicks*onset_remix_ratio + y_sub*(1-onset_remix_ratio)
+            y_onset_remix = y_onset_remix/np.max(np.abs(y_onset_remix))
+            st.audio(y_onset_remix, format="audio/ogg", sample_rate=sr)
         
 
     # onset_strength
@@ -145,7 +149,11 @@ if file is not None:
             data=convert_df(df_beats),
             file_name="beats_data.csv",
         )
-        st.audio(y_beat_clicks, format="audio/ogg", sample_rate=sr)
+        with st.expander("Beat Click Preview"):
+            beat_remix_ratio = st.slider("Beat Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
+            y_beat_remix = y_beat_clicks*beat_remix_ratio + y_sub*(1-beat_remix_ratio)
+            y_beat_remix = y_beat_remix/np.max(np.abs(y_beat_remix))
+            st.audio(y_beat_remix, format="audio/ogg", sample_rate=sr)
 
 
     # predominant_local_pulse
