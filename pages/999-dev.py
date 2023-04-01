@@ -16,3 +16,6 @@ with st.expander("Show memory usage"):
     mem_info = process.memory_info()
     print(f"Memory usage: {mem_info.rss / 1024 / 1024:.2f} MB")
     st.write(f"Memory usage: {mem_info.rss / 1024 / 1024:.2f} MB")
+    
+    
+st.session_state["use_plotly"] = st.checkbox("Use plotly", value=st.session_state["use_plotly"])

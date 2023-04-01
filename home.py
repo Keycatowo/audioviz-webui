@@ -7,6 +7,7 @@ st.session_state.debug = False
 st.session_state.start_time = 0.0
 st.session_state.first_run = True
 st.session_state["use_segment"] = False
+st.session_state["use_plotly"] = False
 
 st.write(
     """

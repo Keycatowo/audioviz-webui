@@ -76,41 +76,46 @@ if file is not None:
 #%% 功能分頁
 if file is not None:
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4 = st.tabs([
         "Waveform(mathplotlib)",
-        "Waveform(plotly)",
         "signal_RMS_analysis",
         "Spectrogram",
         "Download RMS data"])
     
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
 
-    # 繪製聲音波形圖
+    # 繪製聲音波形圖(支援雙模式)
     with tab1:
-        st.subheader("Waveform(mathplotlib)")
-        fig1_1, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False)
-        st.pyplot(fig1_1)
-    
-    # 繪製聲音波形圖
+        st.subheader("Waveform")
+        if st.session_state["use_plotly"]:
+            fig1_1, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=True)
+            st.plotly_chart(fig1_1)
+        else:
+            fig1_1, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False)
+            st.pyplot(fig1_1)
+
+    # 繪製聲音RMS圖(支援雙模式)
     with tab2:
-        st.subheader("Waveform(plotly)")
-        fig1_2, _ = plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=True) 
-        st.plotly_chart(fig1_2)
-
-    # 繪製聲音RMS圖
-    with tab3:
         st.subheader("signal_RMS_analysis")
-        fig1_3, ax1_3, times, rms = signal_RMS_analysis(y_sub, shift_time=shift_time)
-        st.pyplot(fig1_3)   
+        if st.session_state["use_plotly"]:
+            fig1_2, ax1_2, times, rms = signal_RMS_analysis(y_sub, shift_time=shift_time, use_plotly=True)
+            st.plotly_chart(fig1_2)
+        else:
+            fig1_2, ax1_2, times, rms = signal_RMS_analysis(y_sub, shift_time=shift_time, use_plotly=False)
+            st.pyplot(fig1_2)   
 
-    # 繪製聲音Spectrogram圖(使用librosa繪製)
-    with tab4:
+    # 繪製聲音Spectrogram圖(支援雙模式)
+    with tab3:
         st.subheader("Spectrogram")
-        fig1_4, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array)
-        st.pyplot(fig1_4)
+        if st.session_state["use_plotly"]:
+            fig1_3, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=True, shift_array=shift_array)
+            st.plotly_chart(fig1_3)
+        else:
+            fig1_3, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array)
+            st.pyplot(fig1_3)
 
     # 下載RMS資料
-    with tab5:
+    with tab4:
         st.subheader("Download RMS data")
         
         col1, col2 = st.columns(2)
