@@ -123,16 +123,60 @@ def plot_spectrogram(
             ax.autoscale()
     return fig, ax
 
-def signal_RMS_analysis(y: npt.ArrayLike, shift_time: float = 0.0) :
+def signal_RMS_analysis(
+    y: npt.ArrayLike, 
+    shift_time: float = 0.0,
+    use_plotly=False
+) -> typing.Tuple[plt.Figure, plt.Axes, npt.ArrayLike, npt.ArrayLike]:
+    """
+    Computes the Root Mean Square (RMS) of a given audio signal and plots the result.
 
-    fig, ax = plt.subplots()
+    Parameters
+    ----------
+    y : npt.ArrayLike
+        The audio signal as a 1-dimensional NumPy array or array-like object.
+    shift_time : float, optional
+        Time shift in seconds to apply to the plot (default 0.0).
+    use_plotly : bool, optional
+        Whether to use Plotly for plotting (True) or Matplotlib (False) (default False).
 
+    Returns
+    -------
+    Tuple[plt.Figure, Union[plt.Axes, None], npt.ArrayLike, npt.ArrayLike]
+        A tuple containing:
+            - fig : plt.Figure or go.Figure
+                The plot figure object (either a Matplotlib or Plotly figure object).
+            - ax : plt.Axes or None
+                The plot axes object (only for Matplotlib) or None if `use_plotly` is True.
+            - times : npt.ArrayLike
+                A 1-dimensional NumPy array of the times (in seconds) at which the RMS was computed.
+            - rms : npt.ArrayLike
+                A 1-dimensional NumPy array containing the RMS values for each window.
+
+    Raises
+    ------
+    TypeError
+        If the input signal is not a 1-dimensional NumPy array or array-like object.
+
+    Examples
+    --------
+    # Compute the RMS and plot the result using Matplotlib
+    y, sr = librosa.load('audio_file.wav')
+    fig, ax, times, rms = signal_RMS_analysis(y, use_plotly=False)
+    plt.show()
+    """
     rms = librosa.feature.rms(y = y)
     times = librosa.times_like(rms) + shift_time
-
-    ax.plot(times, rms[0])
-    ax.set_xlabel('Time (s)')
-    ax.set_ylabel('RMS')
+    
+    if use_plotly:
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=times, y=rms[0]))
+        ax = None
+    else:
+        fig, ax = plt.subplots()
+        ax.plot(times, rms[0])
+        ax.set_xlabel('Time (s)')
+        ax.set_ylabel('RMS')
 
 
     return fig, ax, times, rms
