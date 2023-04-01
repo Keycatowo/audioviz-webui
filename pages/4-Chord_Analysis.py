@@ -35,7 +35,7 @@ with st.expander("上傳檔案(Upload Files)"):
         st.write(f"File size: `{file.size}`")
 
         # 載入音檔
-        y, sr = librosa.load(file, sr=44100)
+        y, sr = librosa.load(file, sr=22050)
         st.write(f"Sample rate: `{sr}`")
         duration = float(np.round(len(y)/sr-0.005, 2)) # 時間長度，取小數點後2位，向下取整避免超過音檔長度
         st.write(f"Duration(s): `{duration}`")
