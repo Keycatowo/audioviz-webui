@@ -7,7 +7,8 @@ from matplotlib import pyplot as plt
 import scipy
 
 from numpy import typing as npt
-import typing
+from typing import Optional, Tuple, Union
+
 
 import plotly.graph_objects as go
 import seaborn as sns
@@ -57,7 +58,6 @@ def plot_mel_spectrogram(
     
     return fig, ax
 
-
 def plot_constant_q_transform(y: npt.ArrayLike, sr:int,
                               shift_array: npt.ArrayLike
     ) :
@@ -73,9 +73,85 @@ def plot_constant_q_transform(y: npt.ArrayLike, sr:int,
     fig.colorbar(img, ax=ax, format="%+2.0f dB")
 
     return fig, ax
-
     
+def plot_chroma(
+    y: npt.ArrayLike, 
+    sr: int, 
+    shift_time: Optional[float] = 0.0, 
+    intervals: Optional[int] = 10, 
+    return_data: bool = False, 
+    use_plotly: bool = False
+) -> Union[
+    Tuple[plt.Figure, plt.Axes], 
+    Tuple[go.Figure, None], 
+    Tuple[plt.Figure, plt.Axes, np.ndarray, np.ndarray],
+    Tuple[go.Figure, None, np.ndarray, np.ndarray]
+]:
+    """
+    Plot the chromagram of an audio signal using Matplotlib or Plotly.
 
+    Parameters:
+    -----------
+    y : np.ndarray [shape=(n,)] or None
+        Audio time series.
+    sr : number > 0 [scalar]
+        Sampling rate of y.
+    shift_time : float, default=0.0
+        Amount of time (in seconds) to shift the horizontal axis of the chromagram.
+    intervals : int, default=10
+        Number of frames to display on the horizontal axis.
+    return_data : bool, default=False
+        If True, returns chromagram and times as well as plot.
+    use_plotly : bool, default=False
+        If True, use Plotly instead of Matplotlib to create plot.
+
+    Returns:
+    --------
+    fig : matplotlib.figure.Figure object or plotly.graph_objs._figure.Figure object
+        The resulting plot.
+    ax : matplotlib.axes.Axes object or None
+        Axes of the plot if Matplotlib was used, otherwise None.
+    chroma : np.ndarray
+        Chromagram of the audio signal if return_data=True.
+    chroma_times : np.ndarray
+        Array of times corresponding to the chromagram if return_data=True.
+    """
+    chroma = librosa.feature.chroma_stft(y=y, sr=sr)
+    chroma_times = librosa.times_like(chroma, sr)
+    num_frames = chroma.shape[1]
+    # 取出10個frame的index和chroma_t
+    selected_frames = np.linspace(0, num_frames-1, intervals, dtype=int)
+    selected_frame_times = np.round(chroma_times[selected_frames] + shift_time, 2)
+    
+    if use_plotly:
+        fig = go.Figure(
+            data=go.Heatmap(z=chroma,
+                            x=chroma_times + shift_time,
+                            y=["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+            )
+        )
+        fig.update_layout(title="Chroma",
+                          xaxis_title="Time(s)",
+                          yaxis_title="Pitch Class")
+        ax = None
+    else:
+        fig, ax = plt.subplots(figsize=(10, 4))
+        sns.heatmap(chroma, ax=ax)
+        ax.set_title("Chroma")
+        ax.set_xlabel("Time(s)")
+        ax.invert_yaxis()
+        ax.set_yticklabels(
+            ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
+            rotation=0
+        )
+        ax.set_xticks(selected_frames)
+        ax.set_xticklabels(selected_frame_times, rotation=0)
+    
+    if return_data:
+        return fig, ax, chroma, chroma_times
+    else:
+        return fig, ax
+    
 def plot_pitch_class(
     y: npt.ArrayLike,           # 音訊資料
     sr: int,                    # 取樣率

@@ -11,6 +11,7 @@ from src.st_helper import convert_df, show_readme, get_shift
 from src.pitch_estimation import (
     plot_mel_spectrogram, 
     plot_constant_q_transform, 
+    plot_chroma,
     plot_pitch_class
 )
 
@@ -101,21 +102,19 @@ if file is not None:
     # chroma
     with tab3:
         st.subheader("Chroma")
+        if st.session_state["use_plotly"]:
+            fig2_3, ax2_3, chroma, chroma_t = plot_chroma(y_sub, sr, shift_time, 12, True, use_plotly=True)
+            st.plotly_chart(fig2_3)
+        else:
+            fig2_3, ax2_3, chroma, chroma_t = plot_chroma(y_sub, sr, shift_time, 12, True, use_plotly=False)
+            st.pyplot(fig2_3)
         
-        chroma = librosa.feature.chroma_stft(y=y_sub, sr=sr)
-        chroma_t = librosa.times_like(chroma, sr)
+        # 轉換成dataframe
         df_chroma = pd.DataFrame(chroma)
         df_chroma_t = pd.DataFrame({"Time(s)": chroma_t})
         df_chroma_t["Time(frame)"] = list(range(len(chroma_t)))
         df_chroma_t["Time(s)"] = df_chroma_t["Time(s)"] + shift_time
         df_chroma_t = df_chroma_t[["Time(frame)", "Time(s)"]]
-        
-        fig2_3, ax2_3 = plt.subplots(figsize=(10, 4))
-        sns.heatmap(chroma, ax=ax2_3)
-        ax2_3.set_title("Chroma")
-        ax2_3.set_xlabel("Time(frame)")
-        ax2_3.invert_yaxis()
-        st.pyplot(fig2_3)
         
         st.write("Chroma value")
         st.dataframe(df_chroma, use_container_width=True)
