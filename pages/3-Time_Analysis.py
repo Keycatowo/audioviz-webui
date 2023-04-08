@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot, beat_plot
+from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot, beat_plot, plot_bpm
 from src.st_helper import convert_df, show_readme, get_shift
 import numpy as np
 
@@ -87,14 +87,24 @@ if file is not None:
     # onsets_detection
     with tab1:
         st.subheader("Note Detection")
+        # 計算onset
         fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr, shift_array)
         o_env, o_times, onset_frames = onset_data
         st.pyplot(fig3_1a)
-        # 設定onset_frame調整區塊
+        # 調整onset frame
         clicks = st.multiselect("Onset", 
                                 list(range(len(o_env))), list(onset_frames))
         fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_1b)
+        # 計算bpm
+        onset_beat_window = st.slider("Moving Average Window", min_value=1, max_value=10, value=3, step=1)
+        if st.session_state["use_plotly"]:
+            fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True)
+            st.plotly_chart(fig3_1c)
+        else:
+            fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, False)
+            st.pyplot(fig3_1c)
+        # 下載onset data
         df_onset = pd.DataFrame({"Frame": clicks, "Time(s)": o_times[clicks], "Onset": o_env[clicks]})
         st.dataframe(df_onset, use_container_width=True)
         st.download_button(
@@ -102,6 +112,7 @@ if file is not None:
             data=convert_df(df_onset),
             file_name="onset_data.csv",
         )
+        # 播放onset click
         with st.expander("Onset Click Preview"):
             onset_remix_ratio = st.slider("Onset Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
             y_onset_remix = y_onset_clicks*onset_remix_ratio + y_sub*(1-onset_remix_ratio)
@@ -126,6 +137,7 @@ if file is not None:
     # beat_analysis
     with tab3:
         st.subheader("beat_analysis")
+        # 計算beat
         spec_type = st.selectbox("spec_type", ["mel", "stft"])
         spec_hop_length = st.number_input("spec_hop_length", value=512)
         fig3_3a, ax3_3b, beats_data = beat_analysis(y_sub, sr,
@@ -135,13 +147,20 @@ if file is not None:
         )
         b_times, b_env, b_tempo, b_beats = beats_data
         st.pyplot(fig3_3a)
-        
+        # 調整beat frame
         b_clicks = st.multiselect("Beats",
                                   list(range(len(b_env))), list(b_beats))
         fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_3b)
-        # df_beats = pd.DataFrame([b_clicks, b_times[b_clicks] + shift_time])
-        # df_beats.index = ["frames", "time"]
+        # 計算bpm
+        beat_window = st.slider("Moving Average Window(Beat)", min_value=1, max_value=10, value=3, step=1)
+        if st.session_state["use_plotly"]:
+            fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, True)
+            st.plotly_chart(fig3_3c)
+        else:
+            fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, False)
+            st.pyplot(fig3_3c)
+        # 下載beat data
         df_beats = pd.DataFrame({"Frame": b_clicks, "Time(s)": b_times[b_clicks] + shift_time, "Beats": b_env[b_clicks]})
         st.dataframe(df_beats, use_container_width=True)
         st.download_button(

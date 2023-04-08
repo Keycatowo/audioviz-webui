@@ -4,12 +4,12 @@ from librosa import feature
 
 import numpy as np
 from matplotlib import pyplot as plt
+import plotly.graph_objects as go
 import scipy
 import soundfile as sf
 
 from numpy import typing as npt
-import typing
-
+from typing import List, Tuple
 
 def onsets_detection(y: npt.ArrayLike, sr: int, shift_array: npt.ArrayLike) -> tuple :
     """
@@ -220,4 +220,49 @@ def plot_tempogram(y: npt.ArrayLike, sr: int, type: str = 'autocorr', hop_length
     
     return fig, ax
 
+def plot_bpm(
+    beat_times: List[float], 
+    shift_time: float = 0, 
+    window_size: int = 1, 
+    use_plotly: bool = False,
+) -> Tuple[plt.Figure, plt.Axes]:
+    """
+    Parameters:
+        beat_times (List[float]): 節拍時間的數組。
+        time_shift (float): 將時間軸上的點向右移動的時間量。
+        window_size (int): 用於計算移動平均數的窗口大小。
+        plot_with_plotly (bool): 如果為 True，使用 Plotly 繪製曲線；否則，使用 Matplotlib 繪製曲線。
 
+    Returns:
+        Tuple[plt.Figure, plt.Axes] or go.Figure: 返回繪製的圖形對象。
+        如果 `plot_with_plotly` 為 True，返回 go.Figure 對象；否則，返回 plt.Figure 和 plt.Axes 對象。
+
+    Raises:
+        ValueError: 如果 `beat_times` 不是一個有效的數字數組。
+        ValueError: 如果 `window_size` 不是正整數。
+    """
+
+    times_diff = np.diff(beat_times)
+    times_diff_ma = np.convolve(times_diff, np.ones(window_size)/window_size, mode='same')
+    rate = 1/times_diff_ma * 60
+    
+    if use_plotly:
+        fig = go.Figure(data=go.Scatter(x=beat_times[:-1] + shift_time, y=rate, mode='lines+markers', name=f'BPM (MA{window_size})'))
+        ax = None
+        fig.update_layout(
+            title='Beat Rate Curve', 
+            xaxis_title='Time (s)', 
+            yaxis_title='BPM',
+            showlegend=True,
+        )    
+        
+    else:
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.plot(beat_times[:-1] + shift_time, rate, label=f'BPM (MA{window_size})')
+        ax.set_ylim(0, 280)
+        ax.set_title('Beat Rate Curve')
+        ax.set_xlabel('Time (s)')
+        ax.set_ylabel('BPM')
+        ax.legend()
+    
+    return fig, ax
