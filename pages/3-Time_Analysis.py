@@ -97,13 +97,14 @@ if file is not None:
         fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_1b)
         # 計算bpm
-        onset_beat_window = st.slider("Moving Average Window", min_value=1, max_value=10, value=3, step=1)
-        if st.session_state["use_plotly"]:
-            fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True)
-            st.plotly_chart(fig3_1c)
-        else:
-            fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, False)
-            st.pyplot(fig3_1c)
+        with st.expander("Onset Ratio Curve"):
+            onset_beat_window = st.slider("Moving Average Window", min_value=1, max_value=10, value=3, step=1)
+            if st.session_state["use_plotly"]:
+                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True)
+                st.plotly_chart(fig3_1c)
+            else:
+                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, False)
+                st.pyplot(fig3_1c)
         # 下載onset data
         df_onset = pd.DataFrame({"Frame": clicks, "Time(s)": o_times[clicks], "Onset": o_env[clicks]})
         st.dataframe(df_onset, use_container_width=True)
@@ -153,13 +154,14 @@ if file is not None:
         fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_3b)
         # 計算bpm
-        beat_window = st.slider("Moving Average Window(Beat)", min_value=1, max_value=10, value=3, step=1)
-        if st.session_state["use_plotly"]:
-            fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, True)
-            st.plotly_chart(fig3_3c)
-        else:
-            fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, False)
-            st.pyplot(fig3_3c)
+        with st.expander("Beats Ratio Curve"):
+            beat_window = st.slider("Moving Average Window(Beat)", min_value=1, max_value=10, value=3, step=1)
+            if st.session_state["use_plotly"]:
+                fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, True)
+                st.plotly_chart(fig3_3c)
+            else:
+                fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, False)
+                st.pyplot(fig3_3c)
         # 下載beat data
         df_beats = pd.DataFrame({"Frame": b_clicks, "Time(s)": b_times[b_clicks] + shift_time, "Beats": b_env[b_clicks]})
         st.dataframe(df_beats, use_container_width=True)
