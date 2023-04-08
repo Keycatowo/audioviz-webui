@@ -92,13 +92,21 @@ if file is not None:
         o_env, o_times, onset_frames = onset_data
         st.pyplot(fig3_1a)
         # 調整onset frame
+        if st.session_state["3-Time"]["onset_frames"] == []:
+            st.session_state["3-Time"]["onset_frames"] = list(onset_frames)
         clicks = st.multiselect("Onset", 
-                                list(range(len(o_env))), list(onset_frames))
+                                list(range(len(o_env))), st.session_state["3-Time"]["onset_frames"])
+        st.session_state["3-Time"]["onset_frames"] = clicks
+        
         fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_1b)
         # 計算bpm
         with st.expander("Onset Ratio Curve"):
-            onset_beat_window = st.slider("Moving Average Window", min_value=1, max_value=10, value=3, step=1)
+            onset_beat_window = st.slider("Moving Average Window", 
+                                          min_value=1, max_value=10, 
+                                          value=st.session_state["3-Time"]["onset_ma_window"],  # default: 3
+                                          step=1)
+            st.session_state["3-Time"]["onset_ma_window"] = onset_beat_window
             if st.session_state["use_plotly"]:
                 fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True)
                 st.plotly_chart(fig3_1c)
@@ -124,12 +132,18 @@ if file is not None:
     # onset_strength
     with tab2:
         st.subheader("onset_strength")
-        onset_strength_standard = st.checkbox("standard", value=True)
-        onset_strength_custom_mel = st.checkbox("custom_mel", value=False)
-        onset_strength_cqt = st.checkbox("cqt", value=False)
+        onset_strength_standard = st.checkbox("standard", 
+                                              value=st.session_state["3-Time"]["onset_method_standard"]) # default: True
+        st.session_state["3-Time"]["onset_method_standard"] = onset_strength_standard
+        onset_strength_mel = st.checkbox("mel", 
+                                                value=st.session_state["3-Time"]["onset_method_mel"]) # default: False
+        st.session_state["3-Time"]["onset_method_mel"] = onset_strength_mel
+        onset_strength_cqt = st.checkbox("cqt", 
+                                         value=st.session_state["3-Time"]["onset_method_cqt"]) # default: False
+        st.session_state["3-Time"]["onset_method_cqt"] = onset_strength_cqt
         fig3_2, ax3_2 = plot_onset_strength(y_sub, sr,
             standard=onset_strength_standard,
-            custom_mel=onset_strength_custom_mel,
+            custom_mel=onset_strength_mel,
             cqt=onset_strength_cqt,
             shift_array=shift_array
         )
@@ -149,13 +163,23 @@ if file is not None:
         b_times, b_env, b_tempo, b_beats = beats_data
         st.pyplot(fig3_3a)
         # 調整beat frame
+        if st.session_state["3-Time"]["beat_frames"] == []:
+            st.session_state["3-Time"]["beat_frames"] = list(b_beats)
         b_clicks = st.multiselect("Beats",
-                                  list(range(len(b_env))), list(b_beats))
+                                  list(range(len(b_env))), 
+                                  st.session_state["3-Time"]["beat_frames"]
+        )
+        st.session_state["3-Time"]["beat_frames"] = b_clicks
         fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_3b)
         # 計算bpm
         with st.expander("Beats Ratio Curve"):
-            beat_window = st.slider("Moving Average Window(Beat)", min_value=1, max_value=10, value=3, step=1)
+            beat_window = st.slider("Moving Average Window(Beat)", 
+                                    min_value=1, max_value=10, 
+                                    value=st.session_state["3-Time"]["beat_ma_window"], 
+                                    step=1
+            )
+            st.session_state["3-Time"] = beat_window
             if st.session_state["use_plotly"]:
                 fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, True)
                 st.plotly_chart(fig3_3c)

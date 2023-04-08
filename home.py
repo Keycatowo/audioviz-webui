@@ -4,10 +4,51 @@ import streamlit as st
 st.header("Music Analysis Tool")
 
 st.session_state.debug = False
-st.session_state.start_time = 0.0
-st.session_state.first_run = True
-st.session_state["use_segment"] = False
-st.session_state["use_plotly"] = False
+
+if "inited" not in st.session_state:
+    st.session_state["inited"] = True
+    
+    st.session_state.start_time = 0.0
+    st.session_state.first_run = True
+    st.session_state["use_segment"] = False
+    st.session_state["use_plotly"] = False
+
+    st.session_state["0-file"] = {
+    }
+    st.session_state["1-basic"] = {
+        # option
+        "use_pitch_name": False,
+        
+    }
+    st.session_state["2-Pitch"] = {
+        # option
+        "show_f0": True,
+        "resolution_ratio": 1
+        # data
+    }
+    st.session_state["3-Time"] = {
+        # option
+        "onset_frames": [],
+        "onset_ma_window": 3,
+        
+        "onset_method_standard": True,
+        "onset_method_mel": False,
+        "onset_method_cqt": False,
+        
+        "beat_frames": [],
+        "beat_ma_window": 3,
+        
+    }
+    st.session_state["4-Chord"] = {
+        # data
+        "chord_df": None,
+        
+        # flag
+        "chord_df_ready": False,
+    }
+    st.session_state["5-Structure"] = {}
+    st.session_state["6-Timbre"] = {}
+
 
 st.write(
     """

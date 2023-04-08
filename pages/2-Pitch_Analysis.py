@@ -89,7 +89,8 @@ if file is not None:
     # Mel-frequency spectrogram
     with tab1:
         st.subheader("Mel-frequency spectrogram")
-        with_pitch = st.checkbox("Show pitch", value=True)
+        with_pitch = st.checkbox("Show pitch", value=st.session_state["2-Pitch"]["show_f0"])
+        st.session_state["2-Pitch"]["show_f0"] = with_pitch
         fig2_1, ax2_1 = plot_mel_spectrogram(y_sub, sr, shift_array, with_pitch)
         st.pyplot(fig2_1)
 
@@ -134,7 +135,8 @@ if file is not None:
     # Pitch class type one
     with tab4:
         st.subheader("Pitch class(chroma)")
-        resolution_ratio = st.number_input("Use higher resolution", value=1, min_value=1, max_value=100, step=1)
+        resolution_ratio = st.number_input("Use higher resolution", value=st.session_state["2-Pitch"]["resolution_ratio"], min_value=1, max_value=100, step=1)
+        st.session_state["2-Pitch"]["resolution_ratio"] = resolution_ratio
         fig2_4, ax2_4, df_pitch_class = plot_pitch_class(
             y_sub, sr, 
             resolution_ratio=resolution_ratio,

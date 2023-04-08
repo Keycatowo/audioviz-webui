@@ -101,16 +101,24 @@ if file is not None:
             "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
             "Chord": chord_table(chord_max)
         })
+        if st.session_state["4-Chord"]["chord_df_ready"] == False:
+            st.session_state["4-Chord"]["chord_df"] = chord_results_df
+            st.session_state["4-Chord"]["chord_df_ready"] = True
     
     with tab3:
         # 建立chord result dataframe
+        if st.button("Reset"):
+            st.session_state["4-Chord"]["chord_df"] = chord_results_df.copy()
+            chord_user_df = st.session_state["4-Chord"]["chord_df"]
         
-        chord_results_df = st.experimental_data_editor(
-            chord_results_df,
+        chord_user_df = st.session_state["4-Chord"]["chord_df"]
+        
+        chord_user_df = st.experimental_data_editor(
+            chord_user_df,
             use_container_width=True
         )
         
-        fig4_1b, ax4_1b = plot_user_chord(chord_results_df)
+        fig4_1b, ax4_1b = plot_user_chord(chord_user_df)
         st.pyplot(fig4_1b)
 
     # plot_binary_template_chord_recognition

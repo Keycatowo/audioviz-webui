@@ -107,7 +107,8 @@ if file is not None:
     # 繪製聲音Spectrogram圖(支援雙模式)
     with tab3:
         st.subheader("Spectrogram")
-        use_pitch_names = st.checkbox("Use pitch name", value=False)
+        use_pitch_names = st.checkbox("Use pitch name", value=st.session_state["1-basic"]["use_pitch_name"])
+        st.session_state["1-basic"]["use_pitch_name"] = use_pitch_names
         
         if st.session_state["use_plotly"]:
             fig1_3, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=True, shift_array=shift_array, use_pitch_names=use_pitch_names)
