@@ -107,11 +107,13 @@ if file is not None:
     # 繪製聲音Spectrogram圖(支援雙模式)
     with tab3:
         st.subheader("Spectrogram")
+        use_pitch_names = st.checkbox("Use pitch name", value=False)
+        
         if st.session_state["use_plotly"]:
-            fig1_3, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=True, shift_array=shift_array)
+            fig1_3, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=True, shift_array=shift_array, use_pitch_names=use_pitch_names)
             st.plotly_chart(fig1_3)
         else:
-            fig1_3, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array)
+            fig1_3, _ = plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array, use_pitch_names=use_pitch_names)
             st.pyplot(fig1_3)
 
     # 下載RMS資料

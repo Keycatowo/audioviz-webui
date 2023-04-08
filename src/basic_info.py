@@ -62,7 +62,8 @@ def plot_spectrogram(
     sr: int, 
     shift_time: float = 0.0, 
     shift_array: npt.ArrayLike = np.array([], dtype=np.float32),
-    use_plotly=False
+    use_plotly=False,
+    use_pitch_names=False,
 ) -> typing.Tuple[plt.Figure, plt.Axes]:
     """
     Plots a Spectrogram graph.
@@ -77,6 +78,8 @@ def plot_spectrogram(
         A time shift to apply to the spectrogram, in seconds (default 0.0).
     use_plotly : bool, optional
         Whether to use Plotly to plot the spectrogram (default False).
+    use_pitch_names : bool, optional
+        Whether to use pitch names (e.g. C4, D4, etc.) to label the y-axis (default False).
 
     Returns
     -------
@@ -105,6 +108,10 @@ def plot_spectrogram(
             yaxis_title="Frequency(Hz)",
             yaxis=dict(range=[0, 10000]),
         )
+        if use_pitch_names: # 使用音階名稱顯示y軸
+            notes = librosa.hz_to_note(frequencies[1:]) # 建立音階
+            fig.update_yaxes(ticktext=notes, tickvals=frequencies[1:])
+            fig.update_yaxes(showticklabels=False) # y軸太密集，不顯示ticks
     else:
         fig, ax = plt.subplots()
         D = librosa.amplitude_to_db(
@@ -121,6 +128,10 @@ def plot_spectrogram(
             ax.set_xticks(shift_array - shift_array[0],
                          shift_array)
             ax.autoscale()
+        if use_pitch_names: # 使用音階名稱顯示y軸
+            y_ticks = ax.get_yticks()[1:]
+            ax.set_yticks(y_ticks)
+            ax.set_yticklabels(librosa.core.hz_to_note(y_ticks))
     return fig, ax
 
 def signal_RMS_analysis(
