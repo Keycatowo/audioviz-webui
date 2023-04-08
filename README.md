@@ -14,9 +14,9 @@
 以下是此工具的主要功能：
 
 - Basic analysis：音檔基本資訊
-- Pitch estimation：樂曲音高估計
-- Beat Tracking：節奏追蹤
-- Chord recognition：和弦識別
+- Pitch analysis：樂曲音高估計
+- Time analysis：節奏追蹤
+- Chord analysis：和弦識別
 - Structure analysis：曲式分析
 - Timbre analysis：音色分析
 

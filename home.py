@@ -2,7 +2,6 @@
 import streamlit as st
 
 st.header("Music Analysis Tool")
-
 st.session_state.debug = False
 
 if "inited" not in st.session_state:
@@ -51,8 +50,8 @@ if "inited" not in st.session_state:
 
 
 st.write(
-    """
-    # 音樂分析工具
+"""
+# 音樂分析工具
 
 此工具整合Pitch_estimation、Beat Tracking、Chord recognition、Structure analysis和Timbre analysis等功能，旨在提供一個簡便易用的音樂分析工具。
 
@@ -61,9 +60,9 @@ st.write(
 以下是此工具的主要功能：
 
 - Basic analysis：音檔基本資訊
-- Pitch estimation：樂曲音高估計
-- Beat Tracking：節奏追蹤
-- Chord recognition：和弦識別
+- Pitch analysis：樂曲音高估計
+- Time analysis：節奏追蹤
+- Chord analysis：和弦識別
 - Structure analysis：曲式分析
 - Timbre analysis：音色分析
 
