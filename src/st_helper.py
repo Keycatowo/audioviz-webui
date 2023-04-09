@@ -57,3 +57,11 @@ def update_sessions():
                 new_session = pickle.loads(session_file.read())
                 st.write(new_session)
                 st.session_state.update(new_session)
+
+
+def warning_region(text="This is a warning"):
+    """
+        A warning region.
+        If the user does not select a file, the warning will be shown.
+    """
+    st.warning(text, icon="⚠️")
