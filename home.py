@@ -11,6 +11,7 @@ if "inited" not in st.session_state:
     st.session_state.first_run = True
     st.session_state["use_segment"] = False
     st.session_state["use_plotly"] = False
+    st.session_state["file_name"] = ""
 
     st.session_state["0-file"] = {
     }

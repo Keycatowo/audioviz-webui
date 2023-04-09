@@ -19,3 +19,23 @@ with st.expander("Show memory usage"):
     
     
 st.session_state["use_plotly"] = st.checkbox("Use plotly", value=st.session_state["use_plotly"])
+st.session_state["debug"] = st.checkbox("Debug", value=st.session_state["debug"])
+
+
+
+with st.expander("Session state"):
+    st.write(type(st.session_state))
+    st.write(st.session_state)
+    session_state = dict(st.session_state)
+    st.write(type(session_state))
+    st.write(session_state)
+    
+
+import pickle
+
+
+
+
+# from src.st_helper import download_upload_settings
+
+# download_upload_settings()

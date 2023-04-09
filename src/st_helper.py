@@ -1,4 +1,5 @@
 import streamlit as st
+import pickle
 
 @st.cache_data
 def convert_df(df):
@@ -31,3 +32,28 @@ def get_shift(start_time, end_time):
     shift_array = np.round(shift_array, 1)
     return start_time, shift_array
     
+    
+def update_sessions():
+    """
+        Update the session state.
+        Download/Upload button
+    """
+    if st.session_state["file_name"]:
+        
+        with st.expander("Config Download/Upload"):
+            
+            col1, col2 = st.columns([2, 6])
+
+            col1.download_button(label="Download Current Settings",
+                                data=pickle.dumps(dict(st.session_state)),
+                                file_name=st.session_state["file_name"]+"_config.pkl",
+                                help="Click to Download Current Settings")
+
+            session_file = col2.file_uploader(label="Upload Previous Settings",
+                                            help="Upload a previously saved settings file"
+            )
+
+            if session_file is not None:
+                new_session = pickle.loads(session_file.read())
+                st.write(new_session)
+                st.session_state.update(new_session)

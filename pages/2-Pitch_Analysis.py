@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 import seaborn as sns
-from src.st_helper import convert_df, show_readme, get_shift
+from src.st_helper import convert_df, get_shift, update_sessions
 from src.pitch_estimation import (
     plot_mel_spectrogram, 
     plot_constant_q_transform, 
@@ -29,6 +29,7 @@ with st.expander("上傳檔案(Upload Files)"):
         st.audio(file, format="audio/ogg")
         st.subheader("File information")
         st.write(f"File name: `{file.name}`", )
+        st.session_state["file_name"] = file.name
         st.write(f"File type: `{file.type}`")
         st.write(f"File size: `{file.size}`")
 
@@ -40,6 +41,9 @@ with st.expander("上傳檔案(Upload Files)"):
         y_all = y
         start_time = 0
         end_time = duration
+
+#%% 更新session
+update_sessions()
         
 #%% 片段模式
 if file is not None:

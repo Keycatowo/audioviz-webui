@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.st_helper import convert_df, show_readme, get_shift
+from src.st_helper import convert_df, get_shift, update_sessions
 from src.basic_info import plot_waveform, signal_RMS_analysis, plot_spectrogram
 
 
@@ -23,6 +23,7 @@ with st.expander("上傳檔案(Upload Files)"):
         st.audio(file, format="audio/ogg")
         st.subheader("File information")
         st.write(f"File name: `{file.name}`", )
+        st.session_state["file_name"] = file.name
         st.write(f"File type: `{file.type}`")
         st.write(f"File size: `{file.size}`")
 
@@ -35,8 +36,13 @@ with st.expander("上傳檔案(Upload Files)"):
         start_time = 0
         end_time = duration
         
-#%% 片段模式
+#%% 更新session
+update_sessions()
+        
+#%% 
 if file is not None:
+    
+    # 片段模式 
     use_segment = st.sidebar.checkbox("使用片段模式", value=st.session_state["use_segment"], key="segment")
     st.session_state["use_segment"] = use_segment
     
@@ -70,6 +76,7 @@ if file is not None:
         with st.expander("聲音片段(Segment of the audio)"):
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
             st.audio(y_sub, format="audio/ogg", sample_rate=sr)
+    
     
 
 

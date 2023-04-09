@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 import seaborn as sns
-from src.st_helper import convert_df, show_readme, get_shift
+from src.st_helper import convert_df, get_shift, update_sessions
 from src.chord_recognition import (
     plot_chord_recognition,
     plot_binary_template_chord_recognition,
@@ -31,6 +31,7 @@ with st.expander("上傳檔案(Upload Files)"):
         st.audio(file, format="audio/ogg")
         st.subheader("File information")
         st.write(f"File name: `{file.name}`", )
+        st.session_state["file_name"] = file.name
         st.write(f"File type: `{file.type}`")
         st.write(f"File size: `{file.size}`")
 
@@ -43,6 +44,9 @@ with st.expander("上傳檔案(Upload Files)"):
         start_time = 0
         end_time = duration
         
+#%% 更新session
+update_sessions()
+
 #%% 片段模式
 if file is not None:
     use_segment = st.sidebar.checkbox("使用片段模式", value=st.session_state["use_segment"], key="segment")

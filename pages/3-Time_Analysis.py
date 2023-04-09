@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot, beat_plot, plot_bpm
-from src.st_helper import convert_df, show_readme, get_shift
+from src.st_helper import convert_df, get_shift, update_sessions
 import numpy as np
 
 st.title('Time Analysis')
@@ -23,6 +23,7 @@ with st.expander("上傳檔案(Upload Files)"):
         st.audio(file, format="audio/ogg")
         st.subheader("File information")
         st.write(f"File name: `{file.name}`", )
+        st.session_state["file_name"] = file.name
         st.write(f"File type: `{file.type}`")
         st.write(f"File size: `{file.size}`")
 
@@ -34,7 +35,9 @@ with st.expander("上傳檔案(Upload Files)"):
         y_all = y
         start_time = 0
         end_time = duration
-        
+ 
+#%% 更新session
+update_sessions()       
 #%% 片段模式
 if file is not None:
     use_segment = st.sidebar.checkbox("使用片段模式", value=st.session_state["use_segment"], key="segment")
