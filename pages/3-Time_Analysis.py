@@ -179,7 +179,7 @@ if file is not None:
                                     value=st.session_state["3-Time"]["beat_ma_window"], 
                                     step=1
             )
-            st.session_state["3-Time"] = beat_window
+            st.session_state["3-Time"]["beat_ma_window"] = beat_window
             if st.session_state["use_plotly"]:
                 fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, True)
                 st.plotly_chart(fig3_3c)
