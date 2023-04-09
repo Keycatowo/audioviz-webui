@@ -32,11 +32,22 @@ def onsets_detection(y: npt.ArrayLike, sr: int, shift_array: npt.ArrayLike) -> t
 
     return fig, ax, (o_env, times, onset_frames)
 
-def onset_click_plot(o_env, times, onset_frames, y_len, sr, shift_time) -> tuple:
+def onset_click_plot(
+    o_env, 
+    times, 
+    onset_frames, 
+    y_len, 
+    sr, 
+    shift_time,
+    ax = None
+) -> tuple:
     """
         重新繪製onset frames
     """
-    fig, ax = plt.subplots()
+    if ax is None:
+        fig, ax = plt.subplots()
+    else:
+        fig = ax.get_figure()
     ax.plot(times + shift_time, o_env, label='Onset strength')
     ax.vlines(times[onset_frames] + shift_time, 0, o_env.max(), color='r', alpha=0.9,
               linestyles='--', label='Onsets')
@@ -44,6 +55,7 @@ def onset_click_plot(o_env, times, onset_frames, y_len, sr, shift_time) -> tuple
     ax.legend()
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Strength')
+    ax.set_xlim([shift_time, shift_time + y_len / sr])
     
     y_onset_clicks = librosa.clicks(frames=onset_frames, sr=sr, length=y_len)
     return fig, ax, y_onset_clicks
@@ -225,6 +237,7 @@ def plot_bpm(
     shift_time: float = 0, 
     window_size: int = 1, 
     use_plotly: bool = False,
+    ax = None,
 ) -> Tuple[plt.Figure, plt.Axes]:
     """
     Parameters:
@@ -257,7 +270,10 @@ def plot_bpm(
         )    
         
     else:
-        fig, ax = plt.subplots(figsize=(10, 4))
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(10, 4))
+        else:
+            fig = ax.get_figure()
         ax.plot(beat_times[:-1] + shift_time, rate, label=f'BPM (MA{window_size})')
         ax.set_ylim(0, 280)
         ax.set_title('Beat Rate Curve')

@@ -253,7 +253,10 @@ def plot_chord(chroma, title="", figsize=(12, 6), cmap="coolwarm", include_minor
     
     return fig, ax
 
-def plot_user_chord(df):
+def plot_user_chord(
+    df,
+    ax = None
+):
     
     import seaborn as sns
     chroma_labels = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] + ['Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm']
@@ -270,8 +273,11 @@ def plot_user_chord(df):
     chroma[df["Chord_index"], np.arange(len(df)),] = 1
     
     # 繪圖
-    fig, ax = plt.subplots(figsize=(12, 6))
-    sns.heatmap(chroma, ax=ax, cmap='crest', linewidths=0.01, linecolor=(1, 1, 1, 0.1))
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(12, 6))
+    else:
+        fig = ax.get_figure()
+    sns.heatmap(chroma, ax=ax, cmap='crest', linewidths=0.01, linecolor=(1, 1, 1, 0.1), cbar=False)
     ax.invert_yaxis()
     ax.set_yticks(
         np.arange(len(chroma_labels)) + 0.5,

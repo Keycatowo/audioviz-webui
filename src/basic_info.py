@@ -16,7 +16,8 @@ def plot_waveform(
     x: npt.ArrayLike, 
     y: npt.ArrayLike, 
     shift_time: float = 0.0, 
-    use_plotly=False
+    use_plotly=False,
+    ax=None,
 ) -> typing.Tuple[plt.Figure, plt.Axes]:
     """
     Plots a waveform graph.
@@ -48,11 +49,15 @@ def plot_waveform(
             yaxis_title="Amplitude",
         )
     else:
-        fig, ax = plt.subplots()
+        if ax is None:
+            fig, ax = plt.subplots()
+        else:
+            fig = ax.get_figure()
         ax.plot(x + shift_time, y)
         ax.set_xlabel("Time(s)")
         ax.set_ylabel("Amplitude")
         ax.set_title("Waveform")
+        ax.set_xlim([x[0] + shift_time, x[-1] + shift_time])
         
     return fig, ax
 
@@ -64,6 +69,8 @@ def plot_spectrogram(
     shift_array: npt.ArrayLike = np.array([], dtype=np.float32),
     use_plotly=False,
     use_pitch_names=False,
+    ax = None,
+    show_colorbar=True,
 ) -> typing.Tuple[plt.Figure, plt.Axes]:
     """
     Plots a Spectrogram graph.
@@ -113,14 +120,18 @@ def plot_spectrogram(
             fig.update_yaxes(ticktext=notes, tickvals=frequencies[1:])
             fig.update_yaxes(showticklabels=False) # y軸太密集，不顯示ticks
     else:
-        fig, ax = plt.subplots()
+        if ax is None:
+            fig, ax = plt.subplots()
+        else:
+            fig = ax.get_figure()
         D = librosa.amplitude_to_db(
             np.abs(librosa.stft(y)), ref=np.max
         )
         img = librosa.display.specshow(
             D, x_axis="time", y_axis="log", sr=sr, ax=ax
         )
-        fig.colorbar(img, ax=ax, format="%+2.0f dB")
+        if show_colorbar:
+            fig.colorbar(img, ax=ax, format="%+2.0f dB")
         ax.set_title("Spectrogram")
         ax.set_xlabel("Time(s)")
         ax.set_ylabel("Frequency(Hz)")
