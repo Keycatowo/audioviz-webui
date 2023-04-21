@@ -97,13 +97,15 @@ def plot_spectrogram(
     """
     if use_plotly:
         fig = go.Figure()
-        frequencies = librosa.fft_frequencies(sr=sr, n_fft=2048)
+        Y = librosa.stft(y)
+        frequencies = librosa.fft_frequencies(sr=sr)
+        times = librosa.times_like(Y)
         fig.add_trace(
             go.Heatmap(
                 z=librosa.amplitude_to_db(
-                    np.abs(librosa.stft(y)), ref=np.max
+                    np.abs(Y), ref=np.max
                 ),
-                x=np.arange(len(y)) / sr + shift_time,
+                x=times + shift_time,
                 y=frequencies,
                 colorscale="Viridis",
             )
