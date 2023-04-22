@@ -23,6 +23,10 @@ from src.beat_track import (
     beat_analysis,
     beat_plot,
 )
+from src.pitch_estimation import (
+    plot_mel_spectrogram,
+)
+
 
 warning_region("This page is still under development, there may be errors or incomplete parts.")
 
@@ -101,8 +105,8 @@ if file is not None:
     
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
     
+    with_pitch = st.checkbox("Show pitch", value=st.session_state["2-Pitch"]["show_f0"])
     beats_mode = st.select_slider("Beat/Onset", options=["Beats", "Onset"])
-    
     
     fig = plt.figure(
         figsize=(int(1.8*duration), 25),
@@ -111,7 +115,8 @@ if file is not None:
     plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False, ax=ax1)
     
     ax2 = plt.subplot2grid((9, 1), (2, 0), rowspan=2)
-    plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array, use_pitch_names=st.session_state["1-basic"]["use_pitch_name"], ax=ax2, show_colorbar=False)
+    plot_mel_spectrogram(y_sub, sr, shift_array, with_pitch, ax=ax2, show_colorbar=False)
+    
     
     if "chord_df_modified" in st.session_state["4-Chord"]:
         chord_results_df = st.session_state["4-Chord"]["chord_df_modified"].copy()

@@ -21,6 +21,8 @@ def plot_mel_spectrogram(
         sr:int, 
         shift_array: npt.ArrayLike,
         with_pitch : bool = True,
+        ax = None,
+        show_colorbar : bool = True,
     ):
 
     S = librosa.feature.melspectrogram(y=y, sr=sr)
@@ -33,26 +35,34 @@ def plot_mel_spectrogram(
                                                      fmax=librosa.note_to_hz('C7'))
         times = librosa.times_like(f0, sr)
         
-        fig, ax = plt.subplots(figsize=(12,6))
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(12,6))
+        else:
+            fig = ax.get_figure()
         img = librosa.display.specshow(S_dB, x_axis='time',
                                        y_axis='mel', sr=sr, 
                                        fmax=8000, ax=ax)
         ax.plot(times, f0, label='f0', color='cyan', linewidth=3)
         ax.set_xticks(shift_array - shift_array[0],
                       shift_array)
-        fig.colorbar(img, ax=ax, format='%+2.0f dB')
+        if show_colorbar :
+            fig.colorbar(img, ax=ax, format='%+2.0f dB')
         ax.legend(loc='upper right')
         ax.set(title='Mel-frequency spectrogram')
 
 
     else :
-        fig, ax = plt.subplots(figsize=(12,6))
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(12,6))
+        else:
+            fig = ax.get_figure()
         img = librosa.display.specshow(S_dB, x_axis='time',
                                        y_axis='mel', sr=sr, 
                                        fmax=8000, ax=ax)
         ax.set_xticks(shift_array - shift_array[0],
                       shift_array)
-        fig.colorbar(img, ax=ax, format='%+2.0f dB')
+        if show_colorbar:
+            fig.colorbar(img, ax=ax, format='%+2.0f dB')
         ax.set(title='Mel-frequency spectrogram')
     ax.set_xlabel('Time (s)')
     
