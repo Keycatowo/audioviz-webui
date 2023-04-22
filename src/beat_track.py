@@ -100,9 +100,12 @@ def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_
     return fig, ax
 
 
-def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512, shift_array: npt.ArrayLike = None) :
+def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512, shift_array: npt.ArrayLike = None, ax=None) :
     
-    fig, ax = plt.subplots()
+    if ax is None:
+        fig, ax = plt.subplots()
+    else:
+        fig = ax.get_figure()
     onset_env = librosa.onset.onset_strength(y=y, sr=sr, aggregate=np.median)
     tempo, beats = librosa.beat.beat_track(onset_envelope=onset_env, sr=sr)
     times = librosa.times_like(onset_env, sr=sr, hop_length=spec_hop_length)
@@ -121,8 +124,8 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
         
         ax.set_title('Power spectrogram')
         # fig.colorbar(img, ax=ax[0], format="%+2.0f dB")
-    
-    ax.set_xticks(shift_array - shift_array[0],
+    if shift_array:
+        ax.set_xticks(shift_array - shift_array[0],
                       shift_array)
     ax.autoscale()
     ax.set_xlabel('Time (s)')
@@ -130,13 +133,16 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
     
     return fig, ax, (times, onset_env, tempo, beats)
 
-def beat_plot(times, onset_env, tempo, beats, y_len, sr, shift_time):
+def beat_plot(times, onset_env, tempo, beats, y_len, sr, shift_time, ax=None):
     """
         重新繪製beat
     """
     
-    fig, ax = plt.subplots()
-    ax.plot(times + shift_time, librosa.util.normalize(onset_env), label='Onset strength')
+    if ax is None:
+        fig, ax = plt.subplots()
+    else:
+        fig = ax.get_figure()
+    ax.plot(times + shift_time, librosa.util.normalize(onset_env), label='Beat strength')
     ax.vlines(times[beats] + shift_time, 0, 1, alpha=0.5, color='r', linestyle='--', label='Beats')
     tempoString = 'Tempo = %.2f'% (tempo)
     ax.plot([], [], ' ', label = tempoString)

@@ -20,6 +20,8 @@ from src.beat_track import (
     onsets_detection,
     plot_bpm,
     onset_click_plot,
+    beat_analysis,
+    beat_plot,
 )
 
 warning_region("This page is still under development, there may be errors or incomplete parts.")
@@ -99,19 +101,21 @@ if file is not None:
     
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
     
+    beats_mode = st.select_slider("Beat/Onset", options=["Beats", "Onset"])
     
     
     fig = plt.figure(
         figsize=(int(1.8*duration), 25),
     )
-    
     ax1 = plt.subplot2grid((9, 1), (4, 0), rowspan=1)
     plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False, ax=ax1)
     
     ax2 = plt.subplot2grid((9, 1), (2, 0), rowspan=2)
     plot_spectrogram(y_sub, sr, shift_time=shift_time, use_plotly=False, shift_array=shift_array, use_pitch_names=st.session_state["1-basic"]["use_pitch_name"], ax=ax2, show_colorbar=False)
     
-    if not st.session_state["4-Chord"]["chord_df"]:
+    if "chord_df_modified" in st.session_state["4-Chord"]:
+        chord_results_df = st.session_state["4-Chord"]["chord_df_modified"].copy()
+    else:
         chroma, _, _, _, duration = compute_chromagram(y_sub, sr)
         _, chord_max = chord_recognition_template(chroma, norm_sim='max')
         sec_per_frame = duration/chroma.shape[1]
@@ -120,20 +124,51 @@ if file is not None:
             "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
             "Chord": chord_table(chord_max)
         })
-    else:
-        chord_results_df = st.session_state["4-Chord"]["chord_df"]
     ax3 = plt.subplot2grid((9, 1), (0, 0), rowspan=2)
     plot_user_chord(chord_results_df, ax=ax3)
     
+    # 繪製速度
     ax4 = plt.subplot2grid((9, 1), (5, 0), rowspan=1)
-    fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr, shift_array)
-    o_env, o_times, onset_frames = onset_data
-    if st.session_state["3-Time"]["onset_frames"] == []:
-        st.session_state["3-Time"]["onset_frames"] = list(onset_frames)
-    onset_click_plot(o_env, o_times, st.session_state["3-Time"]["onset_frames"], len(y_sub), sr, shift_time, ax=ax4)
-    
     ax5 = plt.subplot2grid((9, 1), (6, 0), rowspan=1)
-    plot_bpm(o_times[st.session_state["3-Time"]["onset_frames"]], shift_time, st.session_state["3-Time"]["onset_ma_window"], False, ax=ax5)
+    if beats_mode == "Onset":
+        fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr, shift_array)
+        o_env, o_times, onset_frames = onset_data
+        if st.session_state["3-Time"]["onset_frames"] == []:
+            st.session_state["3-Time"]["onset_frames"] = list(onset_frames)
+        onset_click_plot(o_env, o_times, st.session_state["3-Time"]["onset_frames"], len(y_sub), sr, shift_time, ax=ax4)
+        plot_bpm(
+            beat_times=o_times[st.session_state["3-Time"]["onset_frames"]], 
+            shift_time=shift_time, 
+            window_size=st.session_state["3-Time"]["onset_ma_window"], 
+            use_plotly=False, 
+            ax=ax5,
+            title="Onset Rate Curve",
+            ytitle="Onsets / min"
+        )
+    else:
+        _, _, beats_data = beat_analysis(y_sub, sr)
+        b_times, b_env, b_tempo, b_beats = beats_data
+        if st.session_state["3-Time"]["beat_frames"] == []:
+            st.session_state["3-Time"]["beat_frames"] = list(b_beats)
+        fig3_3b, ax3_3b, y_beat_clicks = beat_plot(
+            times=b_times, 
+            onset_env=b_env, 
+            tempo=b_tempo, 
+            beats=st.session_state["3-Time"]["beat_frames"], 
+            y_len=len(y_sub), 
+            sr=sr, 
+            shift_time=shift_time,
+            ax=ax4
+        )
+        plot_bpm(
+            beat_times=b_times[st.session_state["3-Time"]["beat_frames"]],
+            shift_time=shift_time, 
+            window_size=st.session_state["3-Time"]["beat_ma_window"], 
+            use_plotly=False, 
+            ax=ax5,
+            title="Beat Rate Curve",
+            ytitle="Beats / min"
+        )
     
     # 增加ax間的間距
     fig.subplots_adjust(hspace=0.8)
