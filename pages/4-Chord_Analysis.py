@@ -106,23 +106,21 @@ if file is not None:
             "Chord": chord_table(chord_max)
         })
         if st.session_state["4-Chord"]["chord_df_ready"] == False:
-            st.session_state["4-Chord"]["chord_df"] = chord_results_df
+            st.session_state["4-Chord"]["chord_df"] = chord_results_df.copy()
+            st.session_state["4-Chord"]["chord_df_modified"] = chord_results_df.copy()
             st.session_state["4-Chord"]["chord_df_ready"] = True
     
     with tab3:
         # 建立chord result dataframe
         if st.button("Reset"):
-            st.session_state["4-Chord"]["chord_df"] = chord_results_df.copy()
-            chord_user_df = st.session_state["4-Chord"]["chord_df"]
+            st.session_state["4-Chord"]["chord_df_modified"] = st.session_state["4-Chord"]["chord_df"].copy()
         
-        chord_user_df = st.session_state["4-Chord"]["chord_df"]
-        
-        chord_user_df = st.experimental_data_editor(
-            chord_user_df,
+        st.session_state["4-Chord"]["chord_df_modified"] = st.experimental_data_editor(
+            st.session_state["4-Chord"]["chord_df_modified"],
             use_container_width=True
         )
         
-        fig4_1b, ax4_1b = plot_user_chord(chord_user_df)
+        fig4_1b, ax4_1b = plot_user_chord(st.session_state["4-Chord"]["chord_df_modified"])
         st.pyplot(fig4_1b)
 
     # plot_binary_template_chord_recognition
