@@ -141,6 +141,12 @@ if file is not None:
         st.subheader("Pitch class(chroma)")
         resolution_ratio = st.number_input("Use higher resolution", value=st.session_state["2-Pitch"]["resolution_ratio"], min_value=1, max_value=100, step=1)
         st.session_state["2-Pitch"]["resolution_ratio"] = resolution_ratio
+        if st.session_state["use_plotly"]:
+            fig2_4, ax2_4, df_pitch_class = plot_pitch_class(y_sub, sr, resolution_ratio=resolution_ratio, use_plotly=True, return_data=True)
+            st.plotly_chart(fig2_4)
+        else:
+            fig2_4, ax2_4, df_pitch_class = plot_pitch_class(y_sub, sr, resolution_ratio=resolution_ratio, use_plotly=True, return_data=True)
+            
         fig2_4, ax2_4, df_pitch_class = plot_pitch_class(
             y_sub, sr, 
             resolution_ratio=resolution_ratio,
