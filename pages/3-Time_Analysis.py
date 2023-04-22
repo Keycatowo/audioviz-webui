@@ -111,10 +111,10 @@ if file is not None:
                                           step=1)
             st.session_state["3-Time"]["onset_ma_window"] = onset_beat_window
             if st.session_state["use_plotly"]:
-                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True)
+                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True, title="Onset Ratio Curve", ytitle="Onsets / min")
                 st.plotly_chart(fig3_1c)
             else:
-                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, False)
+                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, False, title="Onset Ratio Curve", ytitle="Onsets / min")
                 st.pyplot(fig3_1c)
         # 下載onset data
         df_onset = pd.DataFrame({"Frame": clicks, "Time(s)": o_times[clicks], "Onset": o_env[clicks]})

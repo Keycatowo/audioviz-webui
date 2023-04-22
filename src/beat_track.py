@@ -238,6 +238,9 @@ def plot_bpm(
     window_size: int = 1, 
     use_plotly: bool = False,
     ax = None,
+    title="Beat Rate Curve",
+    xtitle = "Time (s)",
+    ytitle = "Beats / min",
 ) -> Tuple[plt.Figure, plt.Axes]:
     """
     Parameters:
@@ -263,9 +266,9 @@ def plot_bpm(
         fig = go.Figure(data=go.Scatter(x=beat_times[:-1] + shift_time, y=rate, mode='lines+markers', name=f'BPM (MA{window_size})'))
         ax = None
         fig.update_layout(
-            title='Beat Rate Curve', 
-            xaxis_title='Time (s)', 
-            yaxis_title='BPM',
+            title=title, 
+            xaxis_title=xtitle, 
+            yaxis_title=ytitle,
             showlegend=True,
         )    
         
@@ -276,9 +279,9 @@ def plot_bpm(
             fig = ax.get_figure()
         ax.plot(beat_times[:-1] + shift_time, rate, label=f'BPM (MA{window_size})')
         ax.set_ylim(0, 280)
-        ax.set_title('Beat Rate Curve')
-        ax.set_xlabel('Time (s)')
-        ax.set_ylabel('BPM')
+        ax.set_title(title)
+        ax.set_xlabel(xtitle)
+        ax.set_ylabel(ytitle)
         ax.legend()
     
     return fig, ax
