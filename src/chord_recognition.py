@@ -265,12 +265,12 @@ def plot_user_chord(
     assert df["Chord"].isin(chroma_labels).all(), "Chord must be in chroma_labels"
     
     # 將df["Chord"]轉成chroma_labels的index
-    df["Chord_index"] = df["Chord"].apply(lambda x: chroma_labels.index(x))
+    chord_index = df["Chord"].apply(lambda x: chroma_labels.index(x))
     
     # 建立一個24 * len(df)的矩陣，並將值設為0
     chroma = np.zeros((24, len(df)))
-    # 依照df["Chord_index"]的值將chroma的值設為1
-    chroma[df["Chord_index"], np.arange(len(df)),] = 1
+    # 依照chord_index的值將chroma的值設為1
+    chroma[chord_index, np.arange(len(df)),] = 1
     
     # 繪圖
     if ax is None:
