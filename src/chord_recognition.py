@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from matplotlib import pyplot as plt
+import pandas as pd
 
 import librosa
 import libfmp.b
@@ -288,4 +289,62 @@ def plot_user_chord(
     ax.set_xlabel('Time (frame)')
     ax.set_title('User Chord Recognition Result')
     
+    return fig, ax
+
+
+chord_color_map = {
+    "C": "red",
+    "D": "green",
+    "E": "blue",
+    "F": "purple",
+    "G": "orange",
+    "A": "pink",
+    "B": "brown"
+}
+
+def plot_chord_block(
+    chord_df,
+    shift_time=0.0,
+    ax=None
+):
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(20, 3))
+    else:
+        fig = ax.get_figure()
+
+    df = chord_df.copy()
+    grouped = df.groupby((df['Chord'] != df['Chord'].shift()).cumsum())
+    chord_grouped_df = pd.DataFrame(columns=["Start", "End", "Chord"])
+    for group_id, group_df in grouped:
+        start_index = group_df.index[0]
+        end_index = group_df.index[-1]
+        chord_value = group_df.iloc[0]["Chord"]
+        chord_grouped_df = chord_grouped_df.append({
+            "Start": start_index,
+            "End": end_index,
+            "Chord": chord_value
+            },
+            ignore_index=True
+        )  
+        
+    # 繪圖
+    for index, row in chord_grouped_df.iterrows():
+        start = row["Start"]
+        end = row["End"] + 1
+        chord = row["Chord"]
+        color = chord_color_map[chord[0]]
+        alpha = 0.8 if len(chord) == 2 else 0.5
+        
+        ax.axvspan(start, end, alpha=alpha, color=color)
+        ax.text((start+end)/2, 0.5, chord, ha='center', va='center', rotation=0, size=10)
+    # 不顯示y軸
+    ax.axes.yaxis.set_visible(False)
+    # 不顯示x軸
+    ax.axes.xaxis.set_visible(False)
+    # 設定x軸範圍
+    ax.set_xlim(0, chord_df.shape[0])
+    # 設定標題
+    ax.set_title("Chord Recognition Result")
+    
+        
     return fig, ax

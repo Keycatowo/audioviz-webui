@@ -14,7 +14,8 @@ from src.chord_recognition import (
     compute_chromagram,
     chord_recognition_template,
     plot_chord,
-    plot_user_chord
+    plot_user_chord,
+    plot_chord_block,
 )
 from src.beat_track import (
     onsets_detection,
@@ -129,8 +130,9 @@ if file is not None:
             "Time(s)": np.arange(chroma.shape[1])*sec_per_frame + shift_time,
             "Chord": chord_table(chord_max)
         })
-    ax3 = plt.subplot2grid((9, 1), (0, 0), rowspan=2)
-    plot_user_chord(chord_results_df, ax=ax3)
+    ax3 = plt.subplot2grid((9, 1), (0, 0), rowspan=1)
+    # plot_user_chord(chord_results_df, ax=ax3)
+    _, _ = plot_chord_block(chord_results_df, shift_time, ax=ax3)
     
     # 繪製速度
     ax4 = plt.subplot2grid((9, 1), (5, 0), rowspan=1)
@@ -174,6 +176,10 @@ if file is not None:
             title="Beat Rate Curve",
             ytitle="Beats / min"
         )
+    
+    
+    # ax6 = plt.subplot2grid((9, 1), (7, 0), rowspan=1)
+    
     
     # 增加ax間的間距
     fig.subplots_adjust(hspace=0.8)
