@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot, beat_plot, plot_bpm
-from src.st_helper import convert_df, get_shift, update_sessions
+from src.st_helper import convert_df, get_shift, update_sessions, use_plotly
 import numpy as np
 
 st.title('Time Analysis')
@@ -73,6 +73,8 @@ if file is not None:
         with st.expander("聲音片段(Segment of the audio)"):
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
             st.audio(y_sub, format="audio/ogg", sample_rate=sr)
+            
+    use_plotly()
 
 #%% 功能區塊
 if file is not None:

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import pandas as pd
-from src.st_helper import convert_df, get_shift, update_sessions
+from src.st_helper import convert_df, get_shift, update_sessions, use_plotly
 from src.basic_info import plot_waveform, signal_RMS_analysis, plot_spectrogram
 
 
@@ -77,7 +77,7 @@ if file is not None:
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
             st.audio(y_sub, format="audio/ogg", sample_rate=sr)
     
-    
+    use_plotly()
 
 
 #%% 功能分頁

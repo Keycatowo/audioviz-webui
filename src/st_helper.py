@@ -65,3 +65,10 @@ def warning_region(text="This is a warning"):
         If the user does not select a file, the warning will be shown.
     """
     st.warning(text, icon="⚠️")
+    
+    
+def use_plotly():
+    st.session_state["use_plotly"] = st.sidebar.checkbox("Enable Dynamic Graphics", value=st.session_state["use_plotly"])
+    if st.session_state["use_plotly"]:
+        st.sidebar.info("Dynamic Graphics Enabled, more memory needed.\nWe will use Plotly to draw the figure if it is supported.")
+    
