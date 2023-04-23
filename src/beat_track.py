@@ -100,7 +100,7 @@ def plot_onset_strength(y: npt.ArrayLike, sr:int, standard: bool = True, custom_
     return fig, ax
 
 
-def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512, shift_array: npt.ArrayLike = None, ax=None) :
+def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_length: int = 512, shift_array: npt.ArrayLike = np.array([], dtype=np.float32), ax=None) :
     
     if ax is None:
         fig, ax = plt.subplots()
@@ -124,7 +124,7 @@ def beat_analysis(y: npt.ArrayLike, sr:int, spec_type: str = 'mel', spec_hop_len
         
         ax.set_title('Power spectrogram')
         # fig.colorbar(img, ax=ax[0], format="%+2.0f dB")
-    if shift_array:
+    if len(shift_array) > 0:
         ax.set_xticks(shift_array - shift_array[0],
                       shift_array)
     ax.autoscale()
