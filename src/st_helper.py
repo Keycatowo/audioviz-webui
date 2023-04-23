@@ -72,3 +72,11 @@ def use_plotly():
     if st.session_state["use_plotly"]:
         st.sidebar.info("Dynamic Graphics Enabled, more memory needed.\nWe will use Plotly to draw the figure if it is supported.")
     
+    
+def sengment_change_clean():
+    """
+        當模式切換時，清除之前的資料
+    """
+    
+    st.session_state["3-Time"]["onset_frames"] = []
+    st.session_state["3-Time"]["beat_frames"] = []

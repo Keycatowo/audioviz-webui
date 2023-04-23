@@ -7,7 +7,7 @@ import numpy as np
 import librosa
 import pandas as pd
 from src.beat_track import onsets_detection, plot_onset_strength, beat_analysis, predominant_local_pulse, static_tempo_estimation, plot_tempogram, onset_click_plot, beat_plot, plot_bpm
-from src.st_helper import convert_df, get_shift, update_sessions, use_plotly
+from src.st_helper import convert_df, get_shift, update_sessions, use_plotly, sengment_change_clean
 import numpy as np
 
 st.title('Time Analysis')
@@ -46,14 +46,14 @@ if file is not None:
     if use_segment:
         # 若使用片段模式，則顯示選擇片段的起始時間與結束時間
         if st.session_state.first_run:
-            start_time = st.sidebar.number_input("開始時間", value=0.0, min_value=0.0, max_value=duration, step=0.01)
-            end_time = st.sidebar.number_input("結束時間", value=duration, min_value=0.0, max_value=duration, step=0.01)
+            start_time = st.sidebar.number_input("開始時間", value=0.0, min_value=0.0, max_value=duration, step=0.01, on_change=sengment_change_clean)
+            end_time = st.sidebar.number_input("結束時間", value=duration, min_value=0.0, max_value=duration, step=0.01, on_change=sengment_change_clean)
             st.session_state.first_run = False
             st.session_state.start_time = start_time
             st.session_state.end_time = end_time
         else:
-            start_time = st.sidebar.number_input("開始時間", value=st.session_state.start_time, min_value=0.0, max_value=duration, step=0.01)
-            end_time = st.sidebar.number_input("結束時間", value=st.session_state.end_time, min_value=0.0, max_value=duration, step=0.01)
+            start_time = st.sidebar.number_input("開始時間", value=st.session_state.start_time, min_value=0.0, max_value=duration, step=0.01, on_change=sengment_change_clean)
+            end_time = st.sidebar.number_input("結束時間", value=st.session_state.end_time, min_value=0.0, max_value=duration, step=0.01, on_change=sengment_change_clean)
             st.session_state.start_time = start_time
             st.session_state.end_time = end_time
 
