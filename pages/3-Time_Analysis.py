@@ -96,6 +96,18 @@ if file is not None:
         fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr, shift_array)
         o_env, o_times, onset_frames = onset_data
         st.pyplot(fig3_1a)
+        # 上傳onset data
+        onset_file = st.file_uploader("Upload onset data from Tony", type=["csv"])
+        if onset_file is not None:
+            onset_data = pd.read_csv(onset_file, header=None, names=["onset", "note", "offset"])
+            if st.session_state["debug"]:
+                st.dataframe(onset_data, use_container_width=True)
+            onset_times = onset_data["onset"].to_numpy()
+            # 取得每一個onset_times在o_times中最接近的index
+            onset_frames = []
+            for onset_time in onset_times:
+                onset_frames.append(np.argmin(np.abs(o_times-onset_time)))
+            st.session_state["3-Time"]["onset_frames"] = onset_frames
         # 調整onset frame
         if st.session_state["3-Time"]["onset_frames"] == []:
             st.session_state["3-Time"]["onset_frames"] = list(onset_frames)
@@ -126,6 +138,9 @@ if file is not None:
             data=convert_df(df_onset),
             file_name="onset_data.csv",
         )
+            
+            
+        
         # 播放onset click
         with st.expander("Onset Click Preview"):
             onset_remix_ratio = st.slider("Onset Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
