@@ -18,7 +18,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: owohub/music-analysis
+          images: owohub/audioviz
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
