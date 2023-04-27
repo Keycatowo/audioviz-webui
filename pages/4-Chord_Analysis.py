@@ -86,7 +86,7 @@ if file is not None:
 #%%
 if file is not None:
 
-    tab1, tab2, tab3, tab4 = st.tabs(["STFT Chroma", "Chords Result (Default)", "Chords Result (User)", "dev"])
+    tab1, tab2, tab3 = st.tabs(["STFT Chroma", "Chords Result (Default)", "Chords Result (User)"])
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
     
     # STFT Chroma 
@@ -123,10 +123,5 @@ if file is not None:
         fig4_1b, ax4_1b = plot_user_chord(st.session_state["4-Chord"]["chord_df_modified"])
         st.pyplot(fig4_1b)
 
-    # plot_binary_template_chord_recognition
-    with tab4:
-        st.subheader("plot_binary_template_chord_recognition")
-        fig4_4, ax4_4 = plot_binary_template_chord_recognition(y_sub, sr)
-        st.pyplot(fig4_4)
 
 

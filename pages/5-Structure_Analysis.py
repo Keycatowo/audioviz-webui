@@ -79,12 +79,8 @@ if file is not None:
 #%%
 if file is not None:
 
-    tab1, tab2 = st.tabs(["Self-similarity matrix", "empty"])
-
-    # plot_self_similarity
-    with tab1:
-        st.subheader("Self-similarity matrix")
-        affinity = st.checkbox("Affinity", value=False)
-        self_similarity_hop_length = st.number_input("Self similarity hop length", value=1024)
-        fig5_1, ax5_1 = plot_self_similarity(y_sub, sr, affinity=affinity, hop_length=self_similarity_hop_length)
-        st.pyplot(fig5_1)
+    st.subheader("Self-similarity matrix")
+    affinity = st.checkbox("Affinity", value=False)
+    self_similarity_hop_length = st.number_input("Self similarity hop length", value=1024)
+    fig5_1, ax5_1 = plot_self_similarity(y_sub, sr, affinity=affinity, hop_length=self_similarity_hop_length)
+    st.pyplot(fig5_1)
