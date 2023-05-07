@@ -24,10 +24,15 @@
 透過整合現有的各種音樂分析方法與工具，並將其整合在一個簡單易用的網頁工具介面中。
 
 ## 安裝及執行方式
-本工具目前提供3種執行方式，分別為：
+本工具目前提供4種執行方式，分別為：
++ 使用docker安裝運行
 + 使用python本地執行：需要有Python環境，執行效率較高
 + 使用Windows免安裝版本：不需要安裝Python，但執行效率較低
 + 使用網頁範例：不需要安裝Python，受限於記憶體大小，無法上傳過大的音樂檔案
+
+### Docker執行
+Docker Image: [owohub/audioviz](https://hub.docker.com/r/owohub/audioviz)  
+如尚無安裝Docker，步驟詳見[說明文件](https://grace1287986s-organization.gitbook.io/audioviz-ui-v2/installation)
 
 ### 本地端執行(Python)
 需要有Python環境，並安裝相關套件，執行方式如下：
