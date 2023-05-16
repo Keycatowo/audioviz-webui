@@ -51,7 +51,7 @@ streamlit run home.py --server.maxUploadSize 100
 
 ### 本地端執行(Windows免安裝)
 如本地無法安裝Python，可使用包含Python的打包版本，執行方式如下：
-+ 至[Release](https://github.com/Keycatowo/music-analysis/releases)下載
++ 至[Release](https://github.com/Keycatowo/audioviz-webui/releases)下載
 + 解壓縮到任意位置，進入資料夾
 + 執行`run.bat`
 + 在跳出視窗中輸入`streamlit run home.py`，並按下Enter
@@ -60,7 +60,7 @@ streamlit run home.py --server.maxUploadSize 100
 ### 網頁範例
 因為執行記憶體限制，網頁範例有限制檔案大小，無法上傳過大的音樂檔案。
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://nthu-music-tools.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://audioviz.streamlit.app/)
 
 
 ## 問題反饋
@@ -68,8 +68,8 @@ streamlit run home.py --server.maxUploadSize 100
 
 - 發送電子郵件給我們
 - 在我們的GitHub頁面提交問題
-    - [視覺化介面](https://github.com/Keycatowo/music-analysis/issues)
-    - [程式套件](https://github.com/TrangDuLam/NTHU_Music_AI_Tools)
+    - [視覺化介面](https://github.com/Keycatowo/audioviz-webui/issues)
+    - [程式套件](https://github.com/TrangDuLam/audioviz/issues)
 
 我們會盡快回复您的問題。
 

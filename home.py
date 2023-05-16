@@ -88,19 +88,19 @@ st.write(
     + 套件源碼整合、說明文件撰寫
 
 ## 工具相關資源
-+ [視覺化介面](https://github.com/Keycatowo/music-analysis)：適合不具備程式基礎的使用者
-+ [程式套件](https://github.com/TrangDuLam/NTHU_Music_AI_Tools)：提供更多細節調整，適合具備程式基礎的使用者
++ [audioviz-webui](https://github.com/Keycatowo/audioviz-webui)：互動操作介面，適合不具備程式基礎的使用者
++ [audioviz](https://github.com/TrangDuLam/audioviz)：程式套件及Colab,提供更多細節調整，適合具備程式基礎的使用者
 + 說明文件：
-    + ...
-
+    + Audioviz UI [使用說明v1](https://grace1287986s-organization.gitbook.io/musicai-ui-space-v2/)
+    + Audioviz UI [使用說明v2](https://grace1287986s-organization.gitbook.io/audioviz-ui-v2/)
 ## 問題反饋
 
 如果您在使用此專案時遇到任何問題，請通過以下方式與我們聯繫：
 
 - 發送電子郵件給我們
 - 在我們的GitHub頁面提交問題
-    - [視覺化介面](https://github.com/Keycatowo/music-analysis/issues)
-    - [程式套件](https://github.com/TrangDuLam/NTHU_Music_AI_Tools)
+    - [互動操作介面](https://github.com/Keycatowo/music-analysis/issues)
+    - [程式套件及Colab](https://github.com/TrangDuLam/NTHU_Music_AI_Tools)
 
 我們會盡快回复您的問題。
 
@@ -108,6 +108,6 @@ st.write(
 
 音樂分析工具採用 [MIT](https://opensource.org/license/mit/) 授權。
 
-請注意，我們的軟件和內容可能包含第三方軟件庫和組件，這些庫和組件受到其各自的許可證的管轄。有關這些庫和組件的詳細信息，請參閱相應的文檔。
+請注意，我們的內容可能包含第三方套件，這些套件受到其各自的許可證的管轄。有關這些套件的詳細信息，請參閱相應的文檔。
 """
 )
