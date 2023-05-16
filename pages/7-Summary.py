@@ -115,11 +115,11 @@ if file is not None:
         fig = plt.figure(figsize=(int(1.8*duration), 25)) # 隨長度調整圖片大小
         
         # 設定子圖
-        ax_chord = plt.subplot2grid((9, 1), (0, 0), rowspan=1) # 和弦區塊
-        ax_spec = plt.subplot2grid((9, 1), (1, 0), rowspan=2) # 頻譜區塊
-        ax_wave = plt.subplot2grid((9, 1), (3, 0), rowspan=1) # 波形區塊
-        ax_beat = plt.subplot2grid((9, 1), (4, 0), rowspan=1) # 節拍區塊
-        ax_bpm = plt.subplot2grid((9, 1), (5, 0), rowspan=1) # 拍速區塊
+        ax_chord = plt.subplot2grid((22, 1), (1, 0), rowspan=1) # 和弦區塊
+        ax_spec = plt.subplot2grid((11, 1), (1, 0), rowspan=4) # 頻譜區塊
+        ax_wave = plt.subplot2grid((11, 1), (5, 0), rowspan=2) # 波形區塊
+        ax_beat = plt.subplot2grid((11, 1), (7, 0), rowspan=2) # 節拍區塊
+        ax_bpm = plt.subplot2grid((11, 1), (9, 0), rowspan=2) # 拍速區塊
         
         
         # 取得和弦資料
