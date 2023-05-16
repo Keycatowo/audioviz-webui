@@ -201,6 +201,8 @@ def plot_pitch_class(
     )
     note_probs = np.mean(chroma >= 1/np.sqrt(2), axis=1)
     note_probs = note_probs / note_probs.sum() # normalize
+    # 將note_probs rolling (resolution_ratio/2)格
+    note_probs = np.roll(note_probs, resolution_ratio//2)
     
     # 建立位置mask
     unit_pos = np.zeros(resolution_ratio, dtype=bool) # 一個音的標記長度
