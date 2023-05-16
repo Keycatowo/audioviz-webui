@@ -284,7 +284,6 @@ def plot_bpm(
         else:
             fig = ax.get_figure()
         ax.plot(beat_times[:-1] + shift_time, rate, label=f'BPM (MA{window_size})')
-        ax.set_ylim(0, 280)
         ax.set_title(title)
         ax.set_xlabel(xtitle)
         ax.set_ylabel(ytitle)
