@@ -33,7 +33,7 @@ def plot_mel_spectrogram(
         f0, voiced_flag, voiced_probs = librosa.pyin(y,
                                                      fmin=librosa.note_to_hz('C2'),
                                                      fmax=librosa.note_to_hz('C7'))
-        times = librosa.times_like(f0, sr)
+        times = librosa.times_like(f0, sr=sr)
         
         if ax is None:
             fig, ax = plt.subplots(figsize=(12,6))
@@ -127,7 +127,7 @@ def plot_chroma(
         Array of times corresponding to the chromagram if return_data=True.
     """
     chroma = librosa.feature.chroma_stft(y=y, sr=sr)
-    chroma_times = librosa.times_like(chroma, sr)
+    chroma_times = librosa.times_like(chroma, sr=sr)
     num_frames = chroma.shape[1]
     # 取出10個frame的index和chroma_t
     selected_frames = np.linspace(0, num_frames-1, intervals, dtype=int)
