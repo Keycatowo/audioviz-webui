@@ -77,7 +77,7 @@ st.write(
 + [Yu-Fen Huang](https://yfhuang.info/)
     + 中央研究院 資訊科學研究所 音樂與文化科技實驗室(Music & Culture Technology Lab, Institute of Information Science, Academia Sinica, Taiwan)
     + 計畫主持人
-+ [Yu-Lan Chang](https://github.com/TrangDuLam)
++ [Yu-Lan Chuang](https://github.com/TrangDuLam)
     + 清華大學 電機工程所
     + 核心功能開發、套件源碼整合
 + [Hong-Hsiang Liu](https://blog.o-w-o.cc)
