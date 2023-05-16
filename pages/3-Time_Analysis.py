@@ -92,10 +92,12 @@ if file is not None:
     # onsets_detection
     with tab1:
         st.subheader("Note Detection")
+        st.markdown("#### Spectrogram")
         # 計算onset
         fig3_1a, ax3_1a, onset_data = onsets_detection(y_sub, sr, shift_array)
         o_env, o_times, onset_frames = onset_data
         st.pyplot(fig3_1a)
+        st.markdown("#### Modify onset")
         # 上傳onset data
         onset_file = st.file_uploader("Upload onset data from Tony", type=["csv"])
         if onset_file is not None:
@@ -111,26 +113,27 @@ if file is not None:
         # 調整onset frame
         if st.session_state["3-Time"]["onset_frames"] == []:
             st.session_state["3-Time"]["onset_frames"] = list(onset_frames)
-        clicks = st.multiselect("Onset", 
+        clicks = st.multiselect("Modify the onset manually", 
                                 list(range(len(o_env))), st.session_state["3-Time"]["onset_frames"])
         st.session_state["3-Time"]["onset_frames"] = clicks
         
         fig3_1b, ax3_1b, y_onset_clicks = onset_click_plot(o_env, o_times, clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_1b)
         # 計算bpm
-        with st.expander("Onset Ratio Curve"):
-            onset_beat_window = st.slider("Moving Average Window", 
-                                          min_value=1, max_value=10, 
-                                          value=st.session_state["3-Time"]["onset_ma_window"],  # default: 3
-                                          step=1)
-            st.session_state["3-Time"]["onset_ma_window"] = onset_beat_window
-            if st.session_state["use_plotly"]:
-                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True, title="Onset Ratio Curve", ytitle="Onsets / min")
-                st.plotly_chart(fig3_1c)
-            else:
-                fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, False, title="Onset Ratio Curve", ytitle="Onsets / min")
-                st.pyplot(fig3_1c)
+        st.markdown("#### Onset Ratio Curve")
+        onset_beat_window = st.slider("Moving Average Window", 
+                                        min_value=1, max_value=10, 
+                                        value=st.session_state["3-Time"]["onset_ma_window"],  # default: 3
+                                        step=1)
+        st.session_state["3-Time"]["onset_ma_window"] = onset_beat_window
+        if st.session_state["use_plotly"]:
+            fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True, title="Onset Ratio Curve", ytitle="Onsets per minute")
+            st.plotly_chart(fig3_1c)
+        else:
+            fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, False, title="Onset Ratio Curve", ytitle="Onsets per minute")
+            st.pyplot(fig3_1c)
         # 下載onset data
+        st.markdown("#### Onset Data")
         df_onset = pd.DataFrame({"Frame": clicks, "Time(s)": o_times[clicks], "Onset": o_env[clicks]})
         st.dataframe(df_onset, use_container_width=True)
         st.download_button(
@@ -142,11 +145,11 @@ if file is not None:
             
         
         # 播放onset click
-        with st.expander("Onset Click Preview"):
-            onset_remix_ratio = st.slider("Onset Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
-            y_onset_remix = y_onset_clicks*onset_remix_ratio + y_sub*(1-onset_remix_ratio)
-            y_onset_remix = y_onset_remix/np.max(np.abs(y_onset_remix))
-            st.audio(y_onset_remix, format="audio/ogg", sample_rate=sr)
+        st.markdown("#### Onset Click Preview")
+        onset_remix_ratio = st.slider("Onset Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
+        y_onset_remix = y_onset_clicks*onset_remix_ratio + y_sub*(1-onset_remix_ratio)
+        y_onset_remix = y_onset_remix/np.max(np.abs(y_onset_remix))
+        st.audio(y_onset_remix, format="audio/ogg", sample_rate=sr)
         
 
     # onset_strength
@@ -172,6 +175,7 @@ if file is not None:
     # beat_analysis
     with tab3:
         st.subheader("beat_analysis")
+        st.markdown("#### Spectrogram")
         # 計算beat
         spec_type = st.selectbox("spec_type", ["mel", "stft"])
         spec_hop_length = st.number_input("spec_hop_length", value=512)
@@ -183,9 +187,10 @@ if file is not None:
         b_times, b_env, b_tempo, b_beats = beats_data
         st.pyplot(fig3_3a)
         # 調整beat frame
+        st.markdown("#### Modify Beat Clicks")
         if st.session_state["3-Time"]["beat_frames"] == []:
             st.session_state["3-Time"]["beat_frames"] = list(b_beats)
-        b_clicks = st.multiselect("Beats",
+        b_clicks = st.multiselect("Modify the beat manually",
                                   list(range(len(b_env))), 
                                   st.session_state["3-Time"]["beat_frames"]
         )
@@ -193,20 +198,21 @@ if file is not None:
         fig3_3b, ax3_3b, y_beat_clicks = beat_plot(b_times, b_env, b_tempo, b_clicks, len(y_sub), sr, shift_time)
         st.pyplot(fig3_3b)
         # 計算bpm
-        with st.expander("Beats Ratio Curve"):
-            beat_window = st.slider("Moving Average Window(Beat)", 
-                                    min_value=1, max_value=10, 
-                                    value=st.session_state["3-Time"]["beat_ma_window"], 
-                                    step=1
-            )
-            st.session_state["3-Time"]["beat_ma_window"] = beat_window
-            if st.session_state["use_plotly"]:
-                fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, True)
-                st.plotly_chart(fig3_3c)
-            else:
-                fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, False)
-                st.pyplot(fig3_3c)
+        st.markdown("#### Beat Ratio Curve")
+        beat_window = st.slider("Moving Average Window(Beat)", 
+                                min_value=1, max_value=10, 
+                                value=st.session_state["3-Time"]["beat_ma_window"], 
+                                step=1
+        )
+        st.session_state["3-Time"]["beat_ma_window"] = beat_window
+        if st.session_state["use_plotly"]:
+            fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, True,  ytitle="Beats per minute")
+            st.plotly_chart(fig3_3c)
+        else:
+            fig3_3c, ax3_3c = plot_bpm(b_times[b_clicks], shift_time, beat_window, False,  ytitle="Beats per minute")
+            st.pyplot(fig3_3c)
         # 下載beat data
+        st.markdown("#### Beat Data")
         df_beats = pd.DataFrame({"Frame": b_clicks, "Time(s)": b_times[b_clicks] + shift_time, "Beats": b_env[b_clicks]})
         st.dataframe(df_beats, use_container_width=True)
         st.download_button(
@@ -214,11 +220,12 @@ if file is not None:
             data=convert_df(df_beats),
             file_name="beats_data.csv",
         )
-        with st.expander("Beat Click Preview"):
-            beat_remix_ratio = st.slider("Beat Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
-            y_beat_remix = y_beat_clicks*beat_remix_ratio + y_sub*(1-beat_remix_ratio)
-            y_beat_remix = y_beat_remix/np.max(np.abs(y_beat_remix))
-            st.audio(y_beat_remix, format="audio/ogg", sample_rate=sr)
+    
+        st.markdown("#### Beat Click Preview")
+        beat_remix_ratio = st.slider("Beat Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
+        y_beat_remix = y_beat_clicks*beat_remix_ratio + y_sub*(1-beat_remix_ratio)
+        y_beat_remix = y_beat_remix/np.max(np.abs(y_beat_remix))
+        st.audio(y_beat_remix, format="audio/ogg", sample_rate=sr)
 
 
     # predominant_local_pulse
