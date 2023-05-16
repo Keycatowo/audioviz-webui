@@ -146,15 +146,8 @@ if file is not None:
             fig2_4, ax2_4, df_pitch_class = plot_pitch_class(y_sub, sr, resolution_ratio=resolution_ratio, use_plotly=True, return_data=True)
             st.plotly_chart(fig2_4)
         else:
-            fig2_4, ax2_4, df_pitch_class = plot_pitch_class(y_sub, sr, resolution_ratio=resolution_ratio, use_plotly=True, return_data=True)
-            
-        fig2_4, ax2_4, df_pitch_class = plot_pitch_class(
-            y_sub, sr, 
-            resolution_ratio=resolution_ratio,
-            use_plotly = False,
-            return_data = True,
-        )
-        st.pyplot(fig2_4)
+            fig2_4, ax2_4, df_pitch_class = plot_pitch_class(y_sub, sr, resolution_ratio=resolution_ratio, use_plotly=False, return_data=True)
+            st.pyplot(fig2_4)
         st.write(df_pitch_class)
         
         st.download_button(
