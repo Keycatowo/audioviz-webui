@@ -137,7 +137,7 @@ def plot_chroma(
         fig = go.Figure(
             data=go.Heatmap(z=chroma,
                             x=chroma_times + shift_time,
-                            y=["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+                            y=["C", "C#(Db)", "D", "D#(Eb)", "E", "F", "F#(Gb)", "G", "G#(Ab)", "A", "A#(Bb)", "B"]
             )
         )
         fig.update_layout(title="Chroma",
@@ -151,7 +151,7 @@ def plot_chroma(
         ax.set_xlabel("Time(s)")
         ax.invert_yaxis()
         ax.set_yticklabels(
-            ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
+            ["C", "C#(Db)", "D", "D#(Eb)", "E", "F", "F#(Gb)", "G", "G#(Ab)", "A", "A#(Bb)", "B"],
             rotation=0
         )
         ax.set_xticks(selected_frames)
@@ -192,7 +192,7 @@ def plot_pitch_class(
     
     
     # 計算音高類別出現機率
-    note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    note_names = ["C", "C#(Db)", "D", "D#(Eb)", "E", "F", "F#(Gb)", "G", "G#(Ab)", "A", "A#(Bb)", "B"]
     note_colors = ['#636EFA', '#00CC96']
     chroma = librosa.feature.chroma_stft(
         S=np.abs(librosa.stft(y)), 
