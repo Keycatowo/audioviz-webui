@@ -15,19 +15,20 @@ def show_readme(filename):
             st.markdown(f.read())
             
             
-def get_shift(start_time, end_time):
+def get_shift(start_time, end_time, step=5):
     """
         回傳從start_time到end_time的時間刻度
         開頭為start_time，結尾為end_time
-        中間每隔1秒一個刻度
+        中間每隔step秒一個刻度
         
         return: a np.array of time stamps
     """
     import numpy as np
+    step = 1 if step < 1 else step
     
-    shift_array = np.arange(start_time, end_time, 1)
-    if shift_array[-1] != end_time:
-        shift_array = np.append(shift_array, end_time)
+    shift_array = np.arange(start_time, end_time, step)
+    if shift_array[-1] +step > end_time:
+        shift_array = np.append(shift_array[:-1], end_time)
     
     shift_array = np.round(shift_array, 1)
     return start_time, shift_array
