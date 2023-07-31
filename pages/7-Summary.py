@@ -108,11 +108,12 @@ if file is not None:
     
     with_pitch = st.checkbox("Show pitch", value=st.session_state["2-Pitch"]["show_f0"])
     beats_mode = st.select_slider("Beat/Onset", options=["Beats", "Onset"])
+    fig_size = st.slider("Figure size", min_value=1, max_value=5, value=1, step=1)
     
     with st.spinner("Processing..."):
     
         
-        fig = plt.figure(figsize=(int(1.8*duration), 25)) # 隨長度調整圖片大小
+        fig = plt.figure(figsize=(fig_size*int(1.8*duration), fig_size*25)) # 隨長度調整圖片大小
         
         # 設定子圖
         ax_chord = plt.subplot2grid((22, 1), (1, 0), rowspan=1) # 和弦區塊
