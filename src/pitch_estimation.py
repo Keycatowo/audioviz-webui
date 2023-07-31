@@ -23,6 +23,7 @@ def plot_mel_spectrogram(
         with_pitch : bool = True,
         ax = None,
         show_colorbar : bool = True,
+        xlabel : str = 'Time (s)',
     ):
 
     S = librosa.feature.melspectrogram(y=y, sr=sr)
@@ -50,7 +51,6 @@ def plot_mel_spectrogram(
         ax.legend(loc='upper right')
         ax.set(title='Mel-frequency spectrogram')
 
-
     else :
         if ax is None:
             fig, ax = plt.subplots(figsize=(12,6))
@@ -64,7 +64,7 @@ def plot_mel_spectrogram(
         if show_colorbar:
             fig.colorbar(img, ax=ax, format='%+2.0f dB')
         ax.set(title='Mel-frequency spectrogram')
-    ax.set_xlabel('Time (s)')
+    ax.set_xlabel(xlabel)
     
     return fig, ax
 

@@ -18,6 +18,7 @@ def plot_waveform(
     shift_time: float = 0.0, 
     use_plotly=False,
     ax=None,
+    xlabel='Time (s)',
 ) -> typing.Tuple[plt.Figure, plt.Axes]:
     """
     Plots a waveform graph.
@@ -45,7 +46,7 @@ def plot_waveform(
         ax = None
         fig.update_layout(
             title="Waveform",
-            xaxis_title="Time(s)",
+            xaxis_title=xlabel,
             yaxis_title="Amplitude",
         )
     else:
@@ -54,7 +55,7 @@ def plot_waveform(
         else:
             fig = ax.get_figure()
         ax.plot(x + shift_time, y)
-        ax.set_xlabel("Time(s)")
+        ax.set_xlabel(xlabel)
         ax.set_ylabel("Amplitude")
         ax.set_title("Waveform")
         ax.set_xlim([x[0] + shift_time, x[-1] + shift_time])

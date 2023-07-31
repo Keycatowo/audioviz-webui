@@ -336,7 +336,7 @@ def plot_chord_block(
         alpha = 0.8 if len(chord) == 2 else 0.5
         
         ax.axvspan(start, end, alpha=alpha, color=color)
-        ax.text((start+end)/2, 0.5, chord, ha='center', va='center', rotation=0, size=10)
+        ax.text((start+end)/2, 0.5, chord, ha='center', va='center', rotation=270, size=6)
     # 不顯示y軸
     ax.axes.yaxis.set_visible(False)
     # 不顯示x軸

@@ -106,17 +106,16 @@ if file is not None:
     
     shift_time, shift_array = get_shift(start_time, end_time) # shift_array為y_sub的時間刻度
     
-    with_pitch = st.checkbox("Show pitch", value=st.session_state["2-Pitch"]["show_f0"])
+    with_pitch = st.checkbox("Show pitch(f0)", value=st.session_state["2-Pitch"]["show_f0"])
     beats_mode = st.select_slider("Beat/Onset", options=["Beats", "Onset"])
-    fig_size = st.slider("Figure size", min_value=1, max_value=5, value=1, step=1)
     
     with st.spinner("Processing..."):
     
         
-        fig = plt.figure(figsize=(fig_size*int(1.8*duration), fig_size*25)) # 隨長度調整圖片大小
+        fig = plt.figure(figsize=(int(0.8*duration), 10)) # 隨長度調整圖片大小
         
         # 設定子圖
-        ax_chord = plt.subplot2grid((22, 1), (1, 0), rowspan=1) # 和弦區塊
+        ax_chord = plt.subplot2grid((33, 1), (1, 0), rowspan=2) # 和弦區塊
         ax_spec = plt.subplot2grid((11, 1), (1, 0), rowspan=4) # 頻譜區塊
         ax_wave = plt.subplot2grid((11, 1), (5, 0), rowspan=2) # 波形區塊
         ax_beat = plt.subplot2grid((11, 1), (7, 0), rowspan=2) # 節拍區塊
@@ -137,8 +136,8 @@ if file is not None:
             })
 
         # 繪製波形、頻譜、和弦
-        plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False, ax=ax_wave)
-        plot_mel_spectrogram(y_sub, sr, shift_array, with_pitch, ax=ax_spec, show_colorbar=False)
+        plot_waveform(x_sub, y_sub, shift_time=shift_time, use_plotly=False, ax=ax_wave, xlabel='')
+        plot_mel_spectrogram(y_sub, sr, shift_array, with_pitch, ax=ax_spec, show_colorbar=False, xlabel='')
         plot_chord_block(chord_results_df, shift_time, ax=ax_chord)
         
         # 繪製速度
@@ -157,6 +156,8 @@ if file is not None:
                 title="Onset Rate Curve",
                 ytitle="Onsets / min"
             )
+            ax_beat.set_title("Onset")
+            
         else:
             _, _, beats_data = beat_analysis(y_sub, sr)
             b_times, b_env, b_tempo, b_beats = beats_data
@@ -181,10 +182,11 @@ if file is not None:
                 title="Beat Rate Curve",
                 ytitle="Beats / min"
             )
-        
+            ax_beat.set_title("Beat")
+        ax_beat.set_xlabel("")
         
         
         # 增加ax間的間距
-        fig.subplots_adjust(hspace=0.8)
+        fig.subplots_adjust(hspace=2.5)
         
         st.pyplot(fig)
