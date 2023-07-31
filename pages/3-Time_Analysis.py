@@ -121,10 +121,13 @@ if file is not None:
         st.pyplot(fig3_1b)
         # 計算bpm
         st.markdown("#### Onset Ratio Curve")
-        onset_beat_window = st.slider("Moving Average Window", 
+        onset_beat_window = st.slider("Window Size", 
                                         min_value=1, max_value=10, 
                                         value=st.session_state["3-Time"]["onset_ma_window"],  # default: 3
-                                        step=1)
+                                        step=1,
+                                        key="onset_beat_window",
+                                        help="If the size is 3, the onset ratio curve will be the average of every 3 seconds."
+                                    )
         st.session_state["3-Time"]["onset_ma_window"] = onset_beat_window
         if st.session_state["use_plotly"]:
             fig3_1c, ax3_1c = plot_bpm(o_times[clicks], shift_time, onset_beat_window, True, title="Onset Ratio Curve", ytitle="Onsets per minute")
@@ -199,10 +202,12 @@ if file is not None:
         st.pyplot(fig3_3b)
         # 計算bpm
         st.markdown("#### Beat Ratio Curve")
-        beat_window = st.slider("Moving Average Window(Beat)", 
+        beat_window = st.slider("Window Size", 
                                 min_value=1, max_value=10, 
                                 value=st.session_state["3-Time"]["beat_ma_window"], 
-                                step=1
+                                step=1,
+                                key="beat_ma_window",
+                                help="If the size is 3, the beat ratio curve will be the average of every 3 seconds."
         )
         st.session_state["3-Time"]["beat_ma_window"] = beat_window
         if st.session_state["use_plotly"]:

@@ -247,6 +247,7 @@ def plot_bpm(
     title="Beat Rate Curve",
     xtitle = "Time (s)",
     ytitle = "Beats / min",
+    step_size: float = 0.5,
 ) -> Tuple[plt.Figure, plt.Axes]:
     """
     Parameters:
@@ -264,12 +265,21 @@ def plot_bpm(
         ValueError: 如果 `window_size` 不是正整數。
     """
 
-    times_diff = np.diff(beat_times)
-    times_diff_ma = np.convolve(times_diff, np.ones(window_size)/window_size, mode='same')
-    rate = 1/times_diff_ma * 60
+    def count_onset(x, onset_times, window=3.0):
+        delta = window/2.0
+        return len(onset_times[(onset_times > x-delta) & (onset_times < x+delta)])
+
+    def get_bpm_array(onset_times, window=3, step=0.5):
+        start_t = window/2.0
+        end_t = onset_times[-1] - window/2.0
+        time_array = np.arange(start_t, end_t, step)
+        bpm_array = np.array([count_onset(x, onset_times, window) for x in time_array]) * 60 / window
+        return time_array, bpm_array
+    
+    time_array, bpm_array = get_bpm_array(beat_times, window_size, step_size)
     
     if use_plotly:
-        fig = go.Figure(data=go.Scatter(x=beat_times[:-1] + shift_time, y=rate, mode='lines+markers', name=f'BPM (MA{window_size})'))
+        fig = go.Figure(data=go.Scatter(x=time_array + shift_time, y=bpm_array, mode='lines+markers', name=f'MA{window_size}'))
         ax = None
         fig.update_layout(
             title=title, 
@@ -283,7 +293,7 @@ def plot_bpm(
             fig, ax = plt.subplots(figsize=(10, 4))
         else:
             fig = ax.get_figure()
-        ax.plot(beat_times[:-1] + shift_time, rate, label=f'BPM (MA{window_size})')
+        ax.plot(time_array + shift_time, bpm_array, label=f'MA{window_size}')
         ax.set_title(title)
         ax.set_xlabel(xtitle)
         ax.set_ylabel(ytitle)
