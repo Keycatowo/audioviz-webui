@@ -1,4 +1,4 @@
-name: Copy release to cloud and update config
+name: Streamlit Cloud CI
 
 on:
   workflow_dispatch:
@@ -25,6 +25,7 @@ jobs:
       - name: Modify Streamlit config
         run: |
           sed -i 's/maxUploadSize = .*/maxUploadSize = 10/' .streamlit/config.toml
+          sed -i 's/maxMessageSize = .*/maxMessageSize = 800/' .streamlit/config.toml
       - name: Commit changes and push to cloud branch
         run: |
           git config --global user.email "action@github.com"
