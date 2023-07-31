@@ -1,11 +1,15 @@
-# 音樂分析工具 music-analysis tool
+# Audioviz - 視覺化音樂分析工具
 
-![Commits](https://img.shields.io/github/commit-activity/m/Keycatowo/music-analysis) ![Views](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FKeycatowo%2Fmusic-analysis&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=false) ![GitHub](https://img.shields.io/github/license/Keycatowo/music-analysis?style=plastic) ![GitHub repo size](https://img.shields.io/github/repo-size/Keycatowo/music-analysis?style=plastic) ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/Keycatowo/music-analysis) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Keycatowo/music-analysis) ![GitHub all releases](https://img.shields.io/github/downloads/Keycatowo/music-analysis/total) ![Dockerhub CI](https://github.com/Keycatowo/music-analysis/actions/workflows/docker.yml/badge.svg)
+[![Dockerhub CI](https://github.com/Keycatowo/audioviz-webui/actions/workflows/docker.yml/badge.svg?brach=main&style=plastic)](https://github.com/Keycatowo/audioviz-webui/actions/workflows/docker.yml)
+[![Streamlit Cloud CI](https://github.com/Keycatowo/audioviz-webui/actions/workflows/st_cloud.yml/badge.svg?style=plastic)](https://github.com/Keycatowo/audioviz-webui/actions/workflows/st_cloud.yml)
+[![Dockerhub Pulls](https://img.shields.io/docker/pulls/owohub/audioviz.svg)](https://hub.docker.com/repository/docker/owohub/audioviz/general)
+![Commits](https://img.shields.io/github/commit-activity/m/Keycatowo/music-analysis)
+![Views](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FKeycatowo%2Fmusic-analysis&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=false)
+![GitHub](https://img.shields.io/github/license/Keycatowo/audioviz-webui?style=plastic) 
+![GitHub repo size](https://img.shields.io/github/repo-size/Keycatowo/audioviz-webui?style=plastic) 
 
 
-
-此工具整合Pitch_estimation、Beat Tracking、Chord recognition、Structure analysis和Timbre analysis等功能，旨在提供一個簡便易用的音樂分析工具。
-
+Audioviz是一個音樂分析工具，提供基本的音樂分析功能，包括音檔基本資訊、音高估計、節奏追蹤、和弦識別、曲式分析和音色分析等功能。
 
 ![](fig/demo.gif)
 
@@ -24,11 +28,18 @@
 透過整合現有的各種音樂分析方法與工具，並將其整合在一個簡單易用的網頁工具介面中。
 
 ## 安裝及執行方式
-本工具目前提供4種執行方式，分別為：
-+ 使用docker安裝運行
-+ 使用python本地執行：需要有Python環境，執行效率較高
-+ 使用Windows免安裝版本：不需要安裝Python，但執行效率較低
-+ 使用網頁範例：不需要安裝Python，受限於記憶體大小，無法上傳過大的音樂檔案
+本工具目前提供以下幾種執行方式：
++ 安裝Docker容器，在容器中執行
++ 若有Python環境，可在Python環境中執行
++ 執行於Streamlit Cloud：不需要安裝Python，但效能會受限於雲端運算資源
+
+幾種方式比較：
+
+安裝方式 | 安裝流程 | 執行效率 | 備註
+--- | --- | --- | ---
+Docker | ⭐⭐⭐ | ⭐⭐⭐| 不需要安裝Python，且效能較好
+Python | ⭐⭐ | ⭐⭐⭐ | 可以自行修改程式碼，但可能需要注意相依套件版本
+Streamlit Cloud | ⭐ | ⭐ | 容易上手，但效能較差
 
 ### Docker執行
 Docker Image: [owohub/audioviz](https://hub.docker.com/r/owohub/audioviz)  
@@ -38,26 +49,17 @@ Docker Image: [owohub/audioviz](https://hub.docker.com/r/owohub/audioviz)
 需要有Python環境，並安裝相關套件，執行方式如下：
 ```sh
 # 下載專案
-git clone https://github.com/Keycatowo/music-analysis.git
-cd music-analysis
+git clone https://github.com/Keycatowo/audioviz-webui.git
+cd audioviz-webui
 
 # 安裝相關套件
 pip install -r requirements.txt
 
 # 執行
-streamlit run home.py --server.maxUploadSize 100
+streamlit run home.py
 ```
-+ 如果需要更改上傳檔案大小限制，請修改`--server.maxUploadSize`參數，單位為MB
 
-### 本地端執行(Windows免安裝)
-如本地無法安裝Python，可使用包含Python的打包版本，執行方式如下：
-+ 至[Release](https://github.com/Keycatowo/audioviz-webui/releases)下載
-+ 解壓縮到任意位置，進入資料夾
-+ 執行`run.bat`
-+ 在跳出視窗中輸入`streamlit run home.py`，並按下Enter
-+ 如果沒有自動開啟網頁，請至瀏覽器輸入`http://localhost:8501/`
-
-### 網頁範例
+### Streamlit Cloud
 因為執行記憶體限制，網頁範例有限制檔案大小，無法上傳過大的音樂檔案。
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://audioviz.streamlit.app/)
