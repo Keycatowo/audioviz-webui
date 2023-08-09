@@ -115,7 +115,7 @@ if file is not None:
         if st.button("Reset"):
             st.session_state["4-Chord"]["chord_df_modified"] = st.session_state["4-Chord"]["chord_df"].copy()
         
-        st.session_state["4-Chord"]["chord_df_modified"] = st.experimental_data_editor(
+        st.session_state["4-Chord"]["chord_df_modified"] = st.data_editor(
             st.session_state["4-Chord"]["chord_df_modified"],
             use_container_width=True
         )
