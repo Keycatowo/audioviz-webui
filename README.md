@@ -41,6 +41,8 @@ Docker | ⭐⭐⭐ | ⭐⭐⭐| 不需要安裝Python，且效能較好
 Python | ⭐⭐ | ⭐⭐⭐ | 可以自行修改程式碼，但可能需要注意相依套件版本
 Streamlit Cloud | ⭐ | ⭐ | 容易上手，但效能較差
 
+完整安裝方式可以參考[說明文件](https://grace1287986s-organization.gitbook.io/audioviz-ui-v2/installation)
+
 ### Docker執行
 Docker Image: [owohub/audioviz](https://hub.docker.com/r/owohub/audioviz)  
 如尚無安裝Docker，步驟詳見[說明文件](https://grace1287986s-organization.gitbook.io/audioviz-ui-v2/installation)
