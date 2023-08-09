@@ -97,10 +97,16 @@ def plot_spectrogram(
         The generated axes object. If `use_plotly` is True, this value will be None.
     """
     if use_plotly:
-        fig = go.Figure()
+        # Compute the spectrogram
         Y = librosa.stft(y)
         frequencies = librosa.fft_frequencies(sr=sr)
         times = librosa.times_like(Y)
+        get_note = np.vectorize(lambda x: librosa.hz_to_note(x) if x>0 else "")
+        notes = get_note(frequencies)
+        notes_martix = np.repeat(notes.reshape(-1, 1), Y.shape[1], axis=1)
+        
+        # 建立圖表
+        fig = go.Figure()
         fig.add_trace(
             go.Heatmap(
                 z=librosa.amplitude_to_db(
@@ -109,19 +115,22 @@ def plot_spectrogram(
                 x=times + shift_time,
                 y=frequencies,
                 colorscale="Viridis",
+                hovertemplate="Frequency: %{y:.1f} Hz<br>Note: %{text}<br>Time: %{x:.2f} s<br>Amplitude: %{z:.1f} dB", 
+                name="",
+                text=notes_martix,
             )
         )
-        ax = None
+        ax = None # plotly 不需要ax
         fig.update_layout(
             title="Spectrogram",
             xaxis_title="Time(s)",
             yaxis_title="Frequency(Hz)",
-            yaxis=dict(range=[0, 10000]),
+            yaxis=dict(range=[100, 2200]),
         )
         if use_pitch_names: # 使用音階名稱顯示y軸
-            notes = librosa.hz_to_note(frequencies[1:]) # 建立音階
-            fig.update_yaxes(ticktext=notes, tickvals=frequencies[1:])
-            fig.update_yaxes(showticklabels=False) # y軸太密集，不顯示ticks
+            pitches = [f"C{i}" for i in range(2, 9)]
+            pitch_frequencies = [librosa.note_to_hz(i) for i in pitches]
+            fig.update_yaxes(ticktext=pitches, tickvals=pitch_frequencies)
     else:
         if ax is None:
             fig, ax = plt.subplots()
