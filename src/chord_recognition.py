@@ -233,11 +233,27 @@ def chord_table(chord_max):
     return chord_results
 
 
-def plot_chord(chroma, title="", figsize=(12, 6), cmap="coolwarm", include_minor=False):
+def plot_chord(chroma, title="", figsize=(12, 6), cmap="coolwarm", include_minor=False, shift_time=0.0):
     import seaborn as sns
     chroma_labels = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     if include_minor:
         chroma_labels += ['Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm']
+    
+    # 計算時間標記
+    times = librosa.times_like(
+    chroma, 
+    sr=22050, 
+    n_fft=4096, 
+    hop_length=2048
+    )
+    duration = times[-1]
+    target_values = np.arange(5, duration, 5)
+    x_ticks_loc = []
+    x_ticks_label = []
+    for target in target_values:
+        cloest_index = np.argmin(np.abs(times-target))
+        x_ticks_loc.append(cloest_index)
+        x_ticks_label.append(int(target)+shift_time)
     
     fig, ax = plt.subplots(figsize=figsize)
     
@@ -251,12 +267,17 @@ def plot_chord(chroma, title="", figsize=(12, 6), cmap="coolwarm", include_minor
     ax.set_ylabel("Chord")
     ax.set_xlabel('Time (frame)')
     ax.set_title(title)
-    
+    ax.set_xticks(
+        x_ticks_loc,
+        x_ticks_label,
+        rotation=0
+    )
     return fig, ax
 
 def plot_user_chord(
     df,
-    ax = None
+    ax = None,
+    shift_time=0.0
 ):
     
     import seaborn as sns
@@ -288,6 +309,30 @@ def plot_user_chord(
     ax.set_ylabel("Chord")
     ax.set_xlabel('Time (frame)')
     ax.set_title('User Chord Recognition Result')
+    
+    # 計算時間標記
+    times = librosa.times_like(
+    chroma, 
+    sr=22050, 
+    n_fft=4096, 
+    hop_length=2048
+    )
+    duration = times[-1]
+    target_values = np.arange(5, duration, 5)
+    x_ticks_loc = []
+    x_ticks_label = []
+    for target in target_values:
+        cloest_index = np.argmin(np.abs(times-target))
+        x_ticks_loc.append(cloest_index)
+        x_ticks_label.append(int(target)+shift_time)
+    # 繪製時間標記
+    ax.set_xticks(
+        x_ticks_loc,
+        x_ticks_label,
+        rotation=0
+    )
+    
+    
     
     return fig, ax
 
