@@ -20,7 +20,7 @@ with st.expander("上傳檔案(Upload Files)"):
     file = st.file_uploader("Upload your music library", type=["mp3", "wav", "ogg"])
 
     if file is not None:
-        st.audio(file, format="audio/ogg")
+        st.audio(file, format=file.type)
         st.subheader("File information")
         st.write(f"File name: `{file.name}`", )
         st.session_state["file_name"] = file.name
@@ -72,7 +72,7 @@ if file is not None:
     if use_segment: 
         with st.expander("聲音片段(Segment of the audio)"):
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
-            st.audio(y_sub, format="audio/ogg", sample_rate=sr)
+            st.audio(y_sub, format=file.type, sample_rate=sr)
             
     use_plotly()
 
@@ -152,7 +152,7 @@ if file is not None:
         onset_remix_ratio = st.slider("Onset Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
         y_onset_remix = y_onset_clicks*onset_remix_ratio + y_sub*(1-onset_remix_ratio)
         y_onset_remix = y_onset_remix/np.max(np.abs(y_onset_remix))
-        st.audio(y_onset_remix, format="audio/ogg", sample_rate=sr)
+        st.audio(y_onset_remix, format="audio/wav", sample_rate=sr)
         
 
     # onset_strength
@@ -230,7 +230,7 @@ if file is not None:
         beat_remix_ratio = st.slider("Beat Click Volume Ratio", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
         y_beat_remix = y_beat_clicks*beat_remix_ratio + y_sub*(1-beat_remix_ratio)
         y_beat_remix = y_beat_remix/np.max(np.abs(y_beat_remix))
-        st.audio(y_beat_remix, format="audio/ogg", sample_rate=sr)
+        st.audio(y_beat_remix, format="audio/wav", sample_rate=sr)
 
 
     # predominant_local_pulse

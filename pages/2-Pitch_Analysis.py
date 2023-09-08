@@ -26,7 +26,7 @@ with st.expander("上傳檔案(Upload Files)"):
     file = st.file_uploader("Upload your music library", type=["mp3", "wav", "ogg"])
 
     if file is not None:
-        st.audio(file, format="audio/ogg")
+        st.audio(file, format=file.type)
         st.subheader("File information")
         st.write(f"File name: `{file.name}`", )
         st.session_state["file_name"] = file.name
@@ -79,7 +79,7 @@ if file is not None:
     if use_segment: 
         with st.expander("聲音片段(Segment of the audio)"):
             st.write(f"Selected segment: `{start_time}` ~ `{end_time}`, duration: `{end_time-start_time}`")
-            st.audio(y_sub, format="audio/ogg", sample_rate=sr)
+            st.audio(y_sub, format=file.type, sample_rate=sr)
             
     use_plotly()
             
