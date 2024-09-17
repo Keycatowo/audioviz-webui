@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import numpy as np
 import librosa
+import librosa.display
 import pandas as pd
 from src.st_helper import convert_df, get_shift, update_sessions
 from src.structure_analysis import (
